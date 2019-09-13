@@ -16,6 +16,6 @@
 int main()
 {
 	print42();
-
+	printf("frisk\n");
 	return EXIT_SUCCESS;
 }
