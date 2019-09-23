@@ -27,7 +27,7 @@ bin/list.o: src/list.c include/list.h
 	${CC} ${CFLAGS} -c src/list.c -o bin/list.o
 
 tarball: clean
-	tar czf ../cs300_2_Oste8741.tar.gz ../GenericDynamicList
+	tar czf ../cs300_2_oste8741.tar.gz ../GenericDynamicList
 	
 clean:
 	rm -rf bin/*.o bin/listdriver

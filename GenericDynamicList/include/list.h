@@ -1,7 +1,7 @@
 /**************************************************************************
  File name:		  list.h
  Author:        CS, Pacific University
- Date:          10.4.17
+ Date:          09.19.2019
  Class:         CS300
  Assignment:    List Interface
  Purpose:       This file defines the constants, data structures, and
@@ -95,10 +95,6 @@ extern int lstSize (const ListPtr psList);
 // results: Returns the number of elements in the list
 // 					error code priority: ERROR_INVALID_LIST
 
-extern bool lstIsFull (const ListPtr psList);
-// results: If list is full, return true; otherwise, return false
-// 					error code priority: ERROR_INVALID_LIST
-
 extern bool lstIsEmpty (const ListPtr psList);
 // results: If list is empty, return true; otherwise, return false
 // 					error code priority: ERROR_INVALID_LIST
@@ -135,27 +131,26 @@ extern void *lstPeekNext (const ListPtr psList, void *pBuffer, int size);
 //																 ERROR_NO_NEXT
 
 //*************************************************************************
-//							Retrieving values and updating current
+//							Updating current
 //*************************************************************************
-extern void *lstFirst (ListPtr psList, void *pBuffer, int size);
+extern void lstFirst (ListPtr psList);
 // requires:  List is not empty
-// results: 	If the list is not empty, the value of the first element is
-//						returned and current is changed to the first element
-//          	error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
+// results: 	If the list is not empty, current is changed to the first element
+//          	error code priority: ERROR_INVALID_LIST,
 //															 	 ERROR_EMPTY_LIST
 
-extern void *lstNext (ListPtr psList, void *pBuffer, int size);
+extern void lstNext (ListPtr psList);
 // requires:  List is not empty
-// results:   The value of the current element is returned
-// IMPORTANT: Current is changed to the successor of the current element
-//            error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
+// results:   If the list is not empty, current is changed to the
+//						successor of the current element
+//            error code priority: ERROR_INVALID_LIST,
 //																 ERROR_EMPTY_LIST, ERROR_NO_CURRENT
 
-extern void *lstLast (ListPtr psList, void *pBuffer, int size);
+extern void lstLast (ListPtr psList);
 // requires:  List is not empty
-// results:   The value of the last element is returned
-// IMPORTANT: Current is changed to last if it exists
-//            error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
+// results:   If the list is not empty, current is changed to last
+//						if it exists
+//            error code priority: ERROR_INVALID_LIST,
 //																 ERROR_EMPTY_LIST
 
 //*************************************************************************
@@ -200,6 +195,7 @@ extern void lstUpdateCurrent (ListPtr psList, const void *pBuffer,
 // IMPORTANT: user could update with smaller, larger, or the same size data
 //					  so free data, then reallocate based on size before updating
 
+extern void lstReverse(ListPtr psList);
 
 #endif /* LIST_H_ */
 
