@@ -69,7 +69,7 @@ int main(){
 	List sTheList;
 	lstCreate(&sTheList);
 	assert(lstIsEmpty(&sTheList), "List is empty", "List has values for some reason?");
-	assert(!lstHasCurrent(&sTheList), "Creation appears correct")
+	assert(!lstHasCurrent(&sTheList), "Creation appears correct", "Current exists upon creation for some reason");
 
 	lstInsertAfter(&sTheList, &testInt, sizeof(int));
 	assert(!lstIsEmpty(&sTheList), "List is no longer empty", "List is still empty for some reason");

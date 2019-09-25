@@ -243,7 +243,6 @@ extern void *lstDeleteCurrent (ListPtr psList, void *pBuffer, int size){
 		processError("lstDeleteCurrent", ERROR_NO_CURRENT);
 	}
 	memcpy(pBuffer, psList->psCurrent->pData, size);
-	free(psList->psCurrent->pData);
 
 	noSaveDelete(psList);
 	return pBuffer;
@@ -363,6 +362,7 @@ static void updateLast(ListPtr psList){
 
 static void noSaveDelete(ListPtr psList){
 	ListElementPtr psTemp = psList->psCurrent->psNext;
+	free(psList->psCurrent->pData);
 	if(psList->psCurrent == psList->psFirst){
 		psList->psFirst = psTemp;
 		free(psList->psCurrent);
