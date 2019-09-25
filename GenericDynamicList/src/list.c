@@ -15,6 +15,11 @@
 
 char gszListErrors[NUMBER_OF_LIST_ERRORS][MAX_ERROR_LIST_CHARS];
 
+static ListElementPtr makeNewEmpty(ListElementPtr, ListElementPtr);
+static ListElementPtr makeNewFilled(ListElementPtr, ListElementPtr, const void *, int);
+static ListElementPtr findPrev(ListPtr);
+static void assign(ListElementPtr, const void*, int);
+
 /**************************************************************************
  Function: 	 	processError
 
@@ -55,10 +60,10 @@ extern void lstTerminate (ListPtr psList){
 	if(psList == NULL){
 		processError("lstTerminate", ERROR_NO_LIST_TERMINATE);
 	}
-	lstFirst(psList);
+	/*lstFirst(psList);
 	while(!lstIsEmpty(psList)){
 		lstDeleteCurrent(psList);
-	}
+	}*/
 	return;
 }
 
@@ -204,14 +209,20 @@ extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 	}
 
 	if(lstIsEmpty(psList)){
-		psList->psFirst = makeNewFilled(NULL, pBuffer, size);
+		ListElementPtr psNew = NULL;
+		makeNewFilled(NULL, psNew, pBuffer, size);
+		psList->psFirst = psNew;
 		psList->psCurrent = psList->psFirst;
+		psList->numElements++;
 	}
 	else if(!lstHasCurrent(psList)){
 		processError("lstInsertAfter", ERROR_NO_CURRENT);
 	}
 	else{
-		psList->psCurrent->psNext = makeNewFilled(psList->psCurrent->psNext, pBuffer, size);
+		ListElementPtr psNew = NULL;
+		makeNewFilled(psList->psCurrent->psNext, psNew, pBuffer, size);
+		psList->psCurrent->psNext = psNew;
+		psList->numElements++;
 	}
 	return;
 }
@@ -231,17 +242,16 @@ extern void *lstDeleteCurrent (ListPtr psList, void *pBuffer, int size){
 	}
 	ListElementPtr psTemp = psList->psCurrent->psNext;
 	void *pTempData = malloc(size);
+	memcpy(pTempData, psList->psCurrent->pData, size);
+	free(psList->psCurrent->pData);
+	psList->numElements--;
 
 	if(psList->psCurrent == psList->psFirst){
-		memcpy(pTempData, psList->psCurrent->pData, size);
-		free(psList->psCurrent->pData);
 		psList->psFirst = psTemp;
 		free(psList->psCurrent);
 		psList->psCurrent = psList->psFirst;
 	}
 	else{
-		memcpy(pTempData, psList->psCurrent->pData, size);
-		free(psList->psCurrent->pData);
 		psList->psCurrent = findPrev(psList);
 		free(psList->psCurrent->psNext);
 		psList->psCurrent->psNext = psTemp;
@@ -267,15 +277,21 @@ extern void lstInsertBefore (ListPtr psList, const void *pBuffer,
 	}
 
 	if(lstIsEmpty(psList)){
-		psList->psFirst = makeNewFilled(NULL, pBuffer, size);
+		ListElementPtr psNew = NULL;
+		makeNewFilled(NULL, psNew, pBuffer, size);
+		psList->psFirst = psNew;
 		psList->psCurrent = psList->psFirst;
+		psList->numElements++;
 	}
 	else if(!lstHasCurrent(psList)){
 		processError("lstInsertBefore", ERROR_NO_CURRENT);
 	}
 	else{
+		ListElementPtr psNew = NULL;
 		psList->psCurrent = findPrev(psList);
-		psList->psCurrent->psNext = makeNewFilled(psList->psCurrent->psNext, pBuffer, size);
+		makeNewFilled(psList->psCurrent->psNext, psNew, pBuffer, size);
+		psList->psCurrent->psNext = psNew;
+		psList->numElements++;
 	}
 }
 // requires: List is not full
@@ -314,9 +330,7 @@ extern void lstUpdateCurrent (ListPtr psList, const void *pBuffer,
 //*************************************************************************
 //								Static functions for misc. utilities
 //*************************************************************************
-static ListElementPtr makeNewEmpty(ListElementPtr psOldNext){
-	ListElementPtr psNew = NULL;
-
+static ListElementPtr makeNewEmpty(ListElementPtr psOldNext, ListElementPtr psNew){
 	psNew = (ListElementPtr)malloc(sizeof(ListElementPtr));
 	psNew->psNext = psOldNext;
 	psNew->pData = NULL;
@@ -324,8 +338,8 @@ static ListElementPtr makeNewEmpty(ListElementPtr psOldNext){
 	return psNew;
 }
 
-static ListElementPtr makeNewFilled(ListElementPtr psOldNext, const void *pBuffer, int size){
-	ListElementPtr psNew = makeNewEmpty(psOldNext);
+static ListElementPtr makeNewFilled(ListElementPtr psOldNext, ListElementPtr psNew, const void *pBuffer, int size){
+	makeNewEmpty(psOldNext, psNew);
 	assign(psNew, pBuffer, size);
 
 	return psNew;
