@@ -69,6 +69,7 @@ int main(){
 	List sTheList;
 	lstCreate(&sTheList);
 	assert(lstIsEmpty(&sTheList), "List is empty", "List has values for some reason?");
+	assert(!lstHasCurrent(&sTheList), "Creation appears correct")
 
 	lstInsertAfter(&sTheList, &testInt, sizeof(int));
 	assert(!lstIsEmpty(&sTheList), "List is no longer empty", "List is still empty for some reason");
@@ -103,14 +104,33 @@ int main(){
 	assert(bufferInt == i, "Correctly walking", "Walk failure");
 	bufferInt = 0;
 
+	lstLast(&sTheList);
+	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	assert(bufferInt == 9, "List moved to last", "lstLast failed");
+
+	lstFirst(&sTheList);
+	lstNext(&sTheList);
+	lstNext(&sTheList);
+	lstNext(&sTheList);
+	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	assert(bufferInt == 3, "Moved correctly", "Not where expected");
+
+	lstDeleteCurrent(&sTheList, &bufferInt, sizeof(int));
+	assert(lstSize(&sTheList) == 9, "Deleted one correctly", "Did Not delete correctly");
+	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	assert(bufferInt == 2, "Where expected after delete", "Not where expected after delete");
+
+	lstUpdateCurrent(&sTheList, &testInt, sizeof(int));
+	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	assert(bufferInt == testInt, "Updated correctly", "Updated incorrectly");
+
 	lstFirst(&sTheList);
 	lstInsertBefore(&sTheList, &testInt, sizeof(int));
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
 	assert(bufferInt == testInt, "Insert before successful", "Insert before failed");
 
-
 	lstTerminate(&sTheList);
-	assert(lstIsEmpty(&sTheList), "terminated", "list still has stuff");
+	assert(lstIsEmpty(&sTheList), "Terminated list", "list still has stuff");
 
 	return EXIT_SUCCESS;
 }

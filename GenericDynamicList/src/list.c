@@ -111,7 +111,7 @@ extern bool lstHasNext (const ListPtr psList){
 	if(psList == NULL){
 		processError("lstHasNext", ERROR_INVALID_LIST);
 	}
-	return lstHasCurrent(psList) && psList->psCurrent->psNext != NULL;
+	return lstHasCurrent(psList) && (psList->psCurrent->psNext != NULL);
 }
 
 //*************************************************************************
@@ -321,7 +321,7 @@ extern void lstUpdateCurrent (ListPtr psList, const void *pBuffer,
 //								Static functions for misc. utilities
 //*************************************************************************
 static ListElementPtr makeNewEmpty(ListElementPtr psOldNext){
-	ListElementPtr psNew = (ListElementPtr)malloc(sizeof(ListElementPtr));
+	ListElementPtr psNew = (ListElementPtr)malloc(sizeof(ListElement));
 	psNew->psNext = psOldNext;
 	psNew->pData = NULL;
 
