@@ -86,16 +86,22 @@ int main(){
 	assert(lstSize(&sTheList) == 10, "Added 10 elements successfully", "Error adding elements");
 
 	lstFirst(&sTheList);
-	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	lstPeekNext(&sTheList, &bufferInt, sizeof(int));
 	assert(bufferInt == 1, "Peek next works", "Peek next doesn't work");
 	bufferInt = 0;
 
-	for(i = 0; i < 10; i++){
+	//has to be one less because of that first movement
+	for(i = 0; i < 9; i++){
 		lstPeek(&sTheList, &bufferInt, sizeof(int));
+		printf("bufferInt is %d ", bufferInt);
 		assert(bufferInt == i, "Correctly walking", "Walk failure");
 		bufferInt = 0;
 		lstNext(&sTheList);
 	}
+	lstPeek(&sTheList, &bufferInt, sizeof(int));
+	printf("bufferInt is %d ", bufferInt);
+	assert(bufferInt == i, "Correctly walking", "Walk failure");
+	bufferInt = 0;
 
 	lstFirst(&sTheList);
 	lstInsertBefore(&sTheList, &testInt, sizeof(int));
