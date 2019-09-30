@@ -58,76 +58,86 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
  Returned:	 	Exit Status
  *************************************************************************/
 int main(){
-	int testInt = 23;
+	const int TEST_INT = 23;
+	const int LOOP_START = 0;
+	const int LOOP_SIZE = 10 - LOOP_START;
+	const int STRING_MAX = 128;
+
+	char szMsg[STRING_MAX];
+
 	int bufferInt = 0;
-	//char testChar = 'a';
-	//char bufferChar = 'a';
 	int i = 0;
 
 	lstLoadErrorMessages();
 
 	List sTheList;
 	lstCreate(&sTheList);
-	assert(lstIsEmpty(&sTheList), "List is empty", "List has values for some reason?");
-	assert(!lstHasCurrent(&sTheList), "Creation appears correct", "Current exists upon creation for some reason");
+	assert(lstIsEmpty(&sTheList), "List is empty",
+			"List has values for some reason?");
+	assert(!lstHasCurrent(&sTheList), "Creation appears correct",
+			"Current exists upon creation for some reason");
 
-	lstInsertAfter(&sTheList, &testInt, sizeof(int));
-	assert(!lstIsEmpty(&sTheList), "List is no longer empty", "List is still empty for some reason");
+	lstInsertAfter(&sTheList, &TEST_INT, sizeof(int));
+	assert(!lstIsEmpty(&sTheList), "List is no longer empty",
+			"List is still empty for some reason");
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == testInt, "Int stored correctly", "Error peeking");
+	assert(bufferInt == TEST_INT, "Int stored correctly", "Error peeking");
 	bufferInt = 0;
 
 	lstDeleteCurrent(&sTheList, &bufferInt, sizeof(int));
-	assert(lstIsEmpty(&sTheList), "Element deleted successfully", "Element not deleted");
-	assert(bufferInt == testInt, "Copy from deletion correct", "Copy from deletion incorrect");
+	assert(lstIsEmpty(&sTheList), "Element deleted successfully",
+			"Element not deleted");
+	assert(bufferInt == TEST_INT, "Copy from deletion correct",
+			"Copy from deletion incorrect");
 
-	for(i = 0; i < 10; i++){
+	for(i = LOOP_START; i < LOOP_SIZE; i++){
 		lstInsertAfter(&sTheList, &i, sizeof(int));
 	}
-	assert(lstSize(&sTheList) == 10, "Added 10 elements successfully", "Error adding elements");
+	assert(lstSize(&sTheList) == LOOP_SIZE, "Added 10 elements successfully",
+			"Error adding elements");
 
 	lstFirst(&sTheList);
 	lstPeekNext(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == 1, "Peek next works", "Peek next doesn't work");
+	assert(bufferInt == LOOP_START + 1, "Peek next works",
+			"Peek next doesn't work");
 	bufferInt = 0;
 
-	//has to be one less because of that first movement
-	for(i = 0; i < 9; i++){
+	for(i = LOOP_START; i < LOOP_SIZE; i++){
 		lstPeek(&sTheList, &bufferInt, sizeof(int));
-		printf("bufferInt is %d ", bufferInt);
-		assert(bufferInt == i, "Correctly walking", "Walk failure");
+		sprintf(szMsg, "Expected peek value is %d, Actual is %d", i, bufferInt);
+		assert(bufferInt == i, szMsg, szMsg);
 		bufferInt = 0;
 		lstNext(&sTheList);
 	}
-	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	printf("bufferInt is %d ", bufferInt);
-	assert(bufferInt == i, "Correctly walking", "Walk failure");
 	bufferInt = 0;
 
 	lstLast(&sTheList);
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == 9, "List moved to last", "lstLast failed");
+	assert(bufferInt == LOOP_SIZE - 1, "List moved to last", "lstLast failed");
 
 	lstFirst(&sTheList);
 	lstNext(&sTheList);
 	lstNext(&sTheList);
 	lstNext(&sTheList);
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == 3, "Moved correctly", "Not where expected");
+	assert(bufferInt == LOOP_START + 3, "Moved to expected location", "Not where expected");
 
 	lstDeleteCurrent(&sTheList, &bufferInt, sizeof(int));
-	assert(lstSize(&sTheList) == 9, "Deleted one correctly", "Did Not delete correctly");
+	assert(lstSize(&sTheList) == LOOP_SIZE - 1, "Deleted one correctly",
+			"Did Not delete correctly");
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == 2, "Where expected after delete", "Not where expected after delete");
+	assert(bufferInt == LOOP_START + 2, "Where expected after delete",
+			"Not where expected after delete");
 
-	lstUpdateCurrent(&sTheList, &testInt, sizeof(int));
+	lstUpdateCurrent(&sTheList, &TEST_INT, sizeof(int));
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == testInt, "Updated correctly", "Updated incorrectly");
+	assert(bufferInt == TEST_INT, "Updated correctly", "Updated incorrectly");
 
 	lstFirst(&sTheList);
-	lstInsertBefore(&sTheList, &testInt, sizeof(int));
+	lstInsertBefore(&sTheList, &TEST_INT, sizeof(int));
 	lstPeek(&sTheList, &bufferInt, sizeof(int));
-	assert(bufferInt == testInt, "Insert before successful", "Insert before failed");
+	assert(bufferInt == TEST_INT, "Insert before successful",
+			"Insert before failed");
 
 	lstTerminate(&sTheList);
 	assert(lstIsEmpty(&sTheList), "Terminated list", "list still has stuff");

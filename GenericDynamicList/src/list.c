@@ -58,6 +58,15 @@ extern void lstCreate (ListPtr psList){
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	lstTerminate
+
+ Description: Clears list so it can be deleted without memleaks
+
+ Parameters:	psList - pointer to the list to be terminated
+
+ Returned:	 	None
+ *************************************************************************/
 extern void lstTerminate (ListPtr psList){
 	if(psList == NULL){
 		processError("lstTerminate", ERROR_NO_LIST_TERMINATE);
@@ -86,10 +95,29 @@ extern void lstLoadErrorMessages (){
 //*************************************************************************
 // Checking number of elements in list
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	lstSize
+
+ Description: Returns size of list
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	size
+ *************************************************************************/
 extern int lstSize (const ListPtr psList){
 	return psList->numElements;
 }
 
+/**************************************************************************
+ Function: 	 	lstIsEmpty
+
+ Description: Returns true if list is empty
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	is list empty
+ *************************************************************************/
 extern bool lstIsEmpty (const ListPtr psList){
 	if(psList == NULL){
 		processError("lstIsEmpty", ERROR_INVALID_LIST);
@@ -100,6 +128,16 @@ extern bool lstIsEmpty (const ListPtr psList){
 //*************************************************************************
 //												List Testing
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	lstHasCurrent
+
+ Description: Returns if list has a current
+
+ Parameters:	psList - pointer to the list
+
+ Returned:		is current not null
+ *************************************************************************/
 extern bool lstHasCurrent (const ListPtr psList){
 	if(psList == NULL){
 		processError("lstHasCurrent", ERROR_INVALID_LIST);
@@ -107,6 +145,15 @@ extern bool lstHasCurrent (const ListPtr psList){
 	return psList->psCurrent != NULL;
 }
 
+/**************************************************************************
+ Function: 	 	lstHasNext
+
+ Description: Checks for a next in current
+
+ Parameters:	psList - pointer to the list
+
+ Returned:		next does/doesn't exist
+ *************************************************************************/
 extern bool lstHasNext (const ListPtr psList){
 	if(psList == NULL){
 		processError("lstHasNext", ERROR_INVALID_LIST);
@@ -117,6 +164,18 @@ extern bool lstHasNext (const ListPtr psList){
 //*************************************************************************
 //													Peek Operations
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	lstPeek
+
+ Description: Copies data from current into pBuffer
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	pBuffer
+ *************************************************************************/
 extern void *lstPeek (const ListPtr psList, void *pBuffer, int size){
 	if(psList == NULL){
 		processError("lstPeek", ERROR_INVALID_LIST);
@@ -135,6 +194,17 @@ extern void *lstPeek (const ListPtr psList, void *pBuffer, int size){
 	return pBuffer;
 }
 
+/**************************************************************************
+ Function: 	 	lstPeekNext
+
+ Description: Copies data from next into pBuffer
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	pBuffer
+ *************************************************************************/
 extern void *lstPeekNext (const ListPtr psList, void *pBuffer, int size){
 	if(psList == NULL){
 		processError("lstPeekNext", ERROR_INVALID_LIST);
@@ -159,6 +229,16 @@ extern void *lstPeekNext (const ListPtr psList, void *pBuffer, int size){
 //*************************************************************************
 //							Retrieving values and updating current
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	lstFirst
+
+ Description: Moves current to the first element
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	None
+ *************************************************************************/
 extern void lstFirst (ListPtr psList){
 	if(psList == NULL){
 		processError("lstFirst", ERROR_INVALID_LIST);
@@ -171,6 +251,15 @@ extern void lstFirst (ListPtr psList){
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	lstNext
+
+ Description: Moves current to the next element
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	None
+ *************************************************************************/
 extern void lstNext (ListPtr psList){
 	if(psList == NULL){
 		processError("lstNext", ERROR_INVALID_LIST);
@@ -178,14 +267,20 @@ extern void lstNext (ListPtr psList){
 	if(lstIsEmpty(psList)){
 		processError("lstNext", ERROR_EMPTY_LIST);
 	}
-	if(!lstHasNext(psList)){
-		processError("lstNext", ERROR_NO_NEXT);
-	}
 
 	psList->psCurrent = psList->psCurrent->psNext;
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	lstLast
+
+ Description: Moves current to the last element
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	None
+ *************************************************************************/
 extern void lstLast (ListPtr psList){
 	if(psList == NULL){
 		processError("lstLast", ERROR_INVALID_LIST);
@@ -202,6 +297,17 @@ extern void lstLast (ListPtr psList){
 //									Insertion, Deletion, and Updating
 //*************************************************************************
 
+/**************************************************************************
+ Function: 	 	lstInsertAfter
+
+ Description: Creates new list element with data from pBuffer
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	none
+ *************************************************************************/
 extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 	if(psList == NULL){
 		processError("lstInsertAfter", ERROR_INVALID_LIST);
@@ -220,7 +326,8 @@ extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 		processError("lstInsertAfter", ERROR_NO_CURRENT);
 	}
 	else{
-		ListElementPtr psNew = makeNewFilled(psList->psCurrent->psNext, pBuffer, size);
+		ListElementPtr psNew = makeNewFilled(psList->psCurrent->psNext, pBuffer,
+				size);
 		psList->psCurrent->psNext = psNew;
 		psList->psCurrent = psList->psCurrent->psNext;
 		psList->numElements++;
@@ -229,6 +336,17 @@ extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	lstDeleteCurrent
+
+ Description: Deletes current and copies data into pBuffer
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	pBuffer
+ *************************************************************************/
 extern void *lstDeleteCurrent (ListPtr psList, void *pBuffer, int size){
 	if(psList == NULL){
 		processError("lstDeleteCurrent", ERROR_INVALID_LIST);
@@ -247,15 +365,18 @@ extern void *lstDeleteCurrent (ListPtr psList, void *pBuffer, int size){
 	noSaveDelete(psList);
 	return pBuffer;
 }
-// requires: List is not empty
-// results: The current element is deleted and its successor and
-//				  predecessor become each others successor and predecessor. If
-//					the deleted element had a predecessor, then make it the new
-// 					current element; otherwise, make the first element current if
-// 					it exists. The value of the deleted element is returned.
-//          error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
-//					                     ERROR_EMPTY_LIST, ERROR_NO_CURRENT
 
+/**************************************************************************
+ Function: 	 	lstInsertBefore
+
+ Description: Creates new list element with data from pBuffer before current
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	none
+ *************************************************************************/
 extern void lstInsertBefore (ListPtr psList, const void *pBuffer,
 														 int size){
 	if(psList == NULL){
@@ -278,19 +399,24 @@ extern void lstInsertBefore (ListPtr psList, const void *pBuffer,
 	}
 	else{
 		psList->psCurrent = findPrev(psList);
-		ListElementPtr psNew = makeNewFilled(psList->psCurrent->psNext, pBuffer, size);
+		ListElementPtr psNew = makeNewFilled(psList->psCurrent->psNext, pBuffer,
+				size);
 		psList->psCurrent->psNext = psNew;
 		psList->numElements++;
 	}
 }
-// requires: List is not full
-// results:  If the list is not empty, insert the new element as the
-//           predecessor of the current element and make the inserted
-//           element the current element; otherwise, insert element
-//           and make it current.
-//           error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
-//																ERROR_NO_CURRENT
 
+/**************************************************************************
+ Function: 	 	lstUpdateCurrent
+
+ Description: Updates current list element with data from pBuffer
+
+ Parameters:	psList 	- pointer to the list
+ 	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
+ 	 	 	 	 	 	 	size 		- size of datatype
+
+ Returned:	 	none
+ *************************************************************************/
 extern void lstUpdateCurrent (ListPtr psList, const void *pBuffer,
 														  int size){
 	if(psList == NULL){
@@ -309,16 +435,20 @@ extern void lstUpdateCurrent (ListPtr psList, const void *pBuffer,
 	assign(psList->psCurrent, pBuffer, size);
 	return;
 }
-// requires: List is not empty
-// results:  The value of pBuffer is copied into the current element
-//            error code priority: ERROR_INVALID_LIST, ERROR_NULL_PTR,
-//					                       ERROR_EMPTY_LIST, ERROR_NO_CURRENT
-// IMPORTANT: user could update with smaller, larger, or the same size data
-//					  so free data, then reallocate based on size before updating
 
 //*************************************************************************
 //								Static functions for misc. utilities
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	makeNewEmpty
+
+ Description: Sets up new element for use in inserting stuff
+
+ Parameters:	psOldNext - previous next (becomes next of new element)
+
+ Returned:	 	pointer to new element
+ *************************************************************************/
 static ListElementPtr makeNewEmpty(ListElementPtr psOldNext){
 	ListElementPtr psNew = (ListElementPtr)malloc(sizeof(ListElement));
 	psNew->psNext = psOldNext;
@@ -327,13 +457,34 @@ static ListElementPtr makeNewEmpty(ListElementPtr psOldNext){
 	return psNew;
 }
 
-static ListElementPtr makeNewFilled(ListElementPtr psOldNext, const void *pBuffer, int size){
+/**************************************************************************
+ Function: 	 	makeNewFilled
+
+ Description: Sets up new element for use in inserting stuff with data
+
+ Parameters:	psOldNext - previous next (becomes next of new element)
+ 	 	 	 	 	 	  pBuffer 	- data to put in element
+ 	 	 	 	 	 	  size 			- size of data
+
+ Returned:	 	pointer to new element
+ *************************************************************************/
+static ListElementPtr makeNewFilled(ListElementPtr psOldNext,
+		const void *pBuffer, int size){
 	ListElementPtr psNew = makeNewEmpty(psOldNext);
 	assign(psNew, pBuffer, size);
 
 	return psNew;
 }
 
+/**************************************************************************
+ Function: 	 	findPrev
+
+ Description: Finds pointer to the previous list element
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	previous list element
+ *************************************************************************/
 static ListElementPtr findPrev(ListPtr psList){
 	ListElementPtr psIterator = psList->psFirst;
 
@@ -344,12 +495,32 @@ static ListElementPtr findPrev(ListPtr psList){
 	return psIterator;
 }
 
+/**************************************************************************
+ Function: 	 	assign
+
+ Description: assign's data in an element
+
+ Parameters:	psElement - pointer to the element to assign
+ 	 	 	 	 	 	 	pBuffer 	- pointer to buffer to put data
+ 	 	 	 	 	 	 	size 			- size of datatype
+
+ Returned:	 	none
+ *************************************************************************/
 static void assign(ListElementPtr psElement, const void *pUpdate, int size){
 	free(psElement->pData);
 	psElement->pData = malloc(size);
 	memcpy(psElement->pData, pUpdate, size);
 }
 
+/**************************************************************************
+ Function: 	 	updateLast
+
+ Description: Ensures that the last pointer points to the last element
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	none
+ *************************************************************************/
 static void updateLast(ListPtr psList){
 	ListElementPtr psTemp = NULL;
 	psTemp = psList->psCurrent;
@@ -360,6 +531,16 @@ static void updateLast(ListPtr psList){
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	noSaveDelete
+
+ Description: Deletes current without outputting the data. Used within
+ 	 	 	 	 	 	 	lstDeleteCurrent and in terminate (when datatype is unknown)
+
+ Parameters:	psList - pointer to the list
+
+ Returned:	 	none
+ *************************************************************************/
 static void noSaveDelete(ListPtr psList){
 	ListElementPtr psTemp = psList->psCurrent->psNext;
 	free(psList->psCurrent->pData);
