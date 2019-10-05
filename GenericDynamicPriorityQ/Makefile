@@ -18,15 +18,15 @@ bin:
 	mkdir -p bin
 	
 bin/pqueuetester: bin/pqueuetester.o bin/pqueue.o
-	${CC} ${CFLAGS} bin/pqueuetester.o bin/pqueue.o -o bin/listdriver
+	${CC} ${CFLAGS} bin/pqueuetester.o bin/pqueue.o -o bin/pqueuetester
 	
-bin/pqueuetester.o: src/pqueuetester.c include/list.h
-	${CC} ${CFLAGS} -c src/pqueuetester.c -o pqueuetester.o
+bin/pqueuetester.o: src/pqueuetester.c include/pqueue.h
+	${CC} ${CFLAGS} -c src/pqueuetester.c -o bin/pqueuetester.o
 
 bin/pqueue.o: src/pqueue.c include/pqueue.h ../GenericDynamicList/include/list.h
 	${CC} ${CFLAGS} -c src/pqueue.c -o bin/pqueue.o
 
-../GenericDynamicList/bin/list.o
+../GenericDynamicList/bin/list.o:
 	cd ../GenericDynamicList; make bin/list.o
 
 tarball: clean
