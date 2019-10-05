@@ -71,8 +71,9 @@ extern void lstTerminate (ListPtr psList){
 	if(psList == NULL){
 		processError("lstTerminate", ERROR_NO_LIST_TERMINATE);
 	}
-	lstFirst(psList);
+
 	while(!lstIsEmpty(psList)){
+		lstFirst(psList);
 		noSaveDelete(psList);
 	}
 	return;
@@ -172,7 +173,7 @@ extern bool lstHasNext (const ListPtr psList){
 
  Parameters:	psList 	- pointer to the list
  	 	 	 	 	 	 	pBuffer - pointer to buffer to put data
- 	 	 	 	 	 	 	size 		- size of datatype
+ 	 	 	 	 	 	 	size 		- size of datatype of pData
 
  Returned:	 	pBuffer
  *************************************************************************/

@@ -3,6 +3,7 @@
 	<name>GenericDynamicPriorityQ</name>
 	<comment></comment>
 	<projects>
+		<project>GenericDynamicList</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

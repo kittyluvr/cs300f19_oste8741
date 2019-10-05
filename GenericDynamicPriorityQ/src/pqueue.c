@@ -7,6 +7,9 @@
  Purpose:       This file implements the priority queue data structure.
  *************************************************************************/
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include "../../GenericDynamicList/include/list.h"
 #include "../include/pqueue.h"
@@ -24,7 +27,7 @@ char gszPQErrors[NUMBER_OF_LIST_ERRORS][MAX_ERROR_LIST_CHARS];
  Returned:	 	None
  *************************************************************************/
 static void processError (const char *pszFunctionName, int errorCode){
-	printf ("Function: %s %s \n ", pszFunctionName,
+	printf("Function: %s %s \n ", pszFunctionName,
 					 gszPQErrors[errorCode]);
 	exit (EXIT_FAILURE);
 } //This is just copied from stk.c
@@ -49,15 +52,15 @@ extern void pqueueTerminate (PriorityQueuePtr psQueue){
 		processError("pqueueTerminate", ERROR_NO_PQ_TERMINATE);
 	}
 
-	PriorityQueueElementPtr psTemp;
+	PriorityQueueElementPtr psTemp = malloc(sizeof(PriorityQueueElement));
 
 	while(!lstIsEmpty(&psQueue->sTheList)){
 		lstFirst(&psQueue->sTheList);
 		lstDeleteCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 		free(psTemp->pData);
 	}
-
-	lstTerminate(&psQueue->sTheList);
+  
+  lstTerminate(&psQueue->sTheList);
 	return;
 }
 // results: If PQ can be terminated, then PQ no longer exists and is empty
@@ -100,14 +103,14 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 		processError("pqueueEnqueue", ERROR_NULL_PQ_PTR);
 	}
 
-	PriorityQueueElementPtr psTemp = NULL;
+	PriorityQueueElementPtr psTemp = malloc(sizeof(PriorityQueueElement));
 	PriorityQueueElementPtr psNew = malloc(sizeof(PriorityQueueElement));
 	psNew->priority = priority;
 	psNew->pData = malloc(size);
-	memcopy(psNew->pData, pBuffer, size);
+	memcpy(psNew->pData, pBuffer, size);
 
 	if(lstIsEmpty(&psQueue->sTheList)){
-		lstInsertAfter(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
+		lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
 	}
 
 	else{
@@ -158,7 +161,7 @@ extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 		processError("pqueueDequeue", ERROR_EMPTY_PQ);
 	}
 
-	PriorityQueueElement psTemp = NULL;
+	PriorityQueueElementPtr psTemp = malloc(sizeof(PriorityQueueElement));
 
 	lstFirst(&psQueue->sTheList);
 	lstDeleteCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
@@ -189,7 +192,7 @@ extern void *pqueuePeek (PriorityQueuePtr psQueue, void *pBuffer, int size,
 		processError("pqueuePeek", ERROR_EMPTY_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp = NULL;
+	PriorityQueueElementPtr psTemp = malloc(sizeof(PriorityQueueElement));
 	lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 	*priority = psTemp->priority;
 	memcpy(pBuffer, psTemp->pData, size);
@@ -209,10 +212,10 @@ extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 		processError("pqueueChangePriority", ERROR_INVALID_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp = NULL;
+	PriorityQueueElementPtr psTemp = malloc(sizeof(PriorityQueueElement));
 
 	//if PQ is empty then do nothing
-	if(pqueueIsEmpty(psQueue)){
+	if(!pqueueIsEmpty(psQueue)){
 		lstFirst(&psQueue->sTheList);
 		lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 		psTemp->priority += change;

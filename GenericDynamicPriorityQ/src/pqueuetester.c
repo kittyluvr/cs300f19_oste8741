@@ -73,7 +73,7 @@ int main(){
 
 	PriorityQueue sQueue;
 	pqueueCreate(&sQueue);
-	assert(pqueueIsEmpty(&sQueue)&&pqueueSize(&sQueue), "Queue is empty", "Why does queue have data or size does not match empty?");
+	assert(pqueueIsEmpty(&sQueue)&&pqueueSize(&sQueue) == 0, "Queue is empty", "Why does queue have data or size does not match empty?");
 
 	pqueueEnqueue(&sQueue, &testInt, sizeof(int), TOP_PRIORITY);
 	assert(pqueueSize(&sQueue) == 1, "Queue has an element", "Enqueue error");
@@ -114,7 +114,7 @@ int main(){
 	for(fancyTestLocation = LOOP_START; loopCheck && fancyTestLocation < TEN; fancyTestLocation++){
 		for(i = LOOP_START; loopCheck && i < TEN; i++){
 			pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
-			if(bufferInt != i * TEN + fancyTestLocation || bufferPriority != PRIORITY_INCREASE){
+			if(bufferInt != i * TEN + fancyTestLocation || bufferPriority != PRIORITY_INCREASE + fancyTestLocation){
 				loopCheck = false;
 				sprintf(szMsg, "Value is %d, expected %d, priority is %d, expected %d", bufferInt, i * TEN + fancyTestLocation, bufferPriority, fancyTestLocation);
 			}
@@ -124,11 +124,12 @@ int main(){
 		assert(loopCheck, "this check successful", szMsg);
 	}
 
+  //Error here move lstFirst inside loop in lstTerminate
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
 	for(i = LOOP_START; i < TEN; i++){
-		pqueueEnqueue(&sQueue, i, sizeof(int), i);
+		pqueueEnqueue(&sQueue, &i, sizeof(int), i);
 	}
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
