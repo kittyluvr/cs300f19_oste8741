@@ -124,7 +124,6 @@ int main(){
 		assert(loopCheck, "this check successful", szMsg);
 	}
 
-  //Error here move lstFirst inside loop in lstTerminate
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 

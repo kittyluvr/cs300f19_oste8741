@@ -20,17 +20,23 @@ bin:
 bin/pqueuetester: bin/pqueuetester.o bin/pqueue.o
 	${CC} ${CFLAGS} bin/pqueuetester.o bin/pqueue.o -o bin/pqueuetester
 	
-bin/pqueuetester.o: src/pqueuetester.c include/pqueue.h ../GenericDynamicList/bin/list.o
+bin/pqueuetester.o: src/pqueuetester.c ../GenericDynamicList/bin/list.o
 	${CC} ${CFLAGS} -c src/pqueuetester.c -o bin/pqueuetester.o
 
-bin/pqueue.o: src/pqueue.c include/pqueue.h ../GenericDynamicList/include/list.h ../GenericDynamicList/bin/list.o
+bin/pqueue.o: src/pqueue.c include/pqueue.h \
+../GenericDynamicList/include/list.h ../GenericDynamicList/bin/list.o
 	${CC} ${CFLAGS} -c src/pqueue.c -o bin/pqueue.o
 
 ../GenericDynamicList/bin/list.o:
 	cd ../GenericDynamicList; make bin/list.o
 
+valgrind: bin/pqueuetester
+	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \
+	--show-leak-kinds=all bin/pqueuetester
+
 tarball: clean
-	tar czf ../cs300_3_Oste8741.tar.gz ../GenericDynamicList ../GenericDynamicPriorityQ
+	tar czf ../cs300_3_Oste8741.tar.gz ../GenericDynamicList \
+	../GenericDynamicPriorityQ
 
 clean:
 	rm -rf bin/*.o bin/pqueuetester
