@@ -64,15 +64,19 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
  Returned:	 	none
  ****************************************************************************/
 int main(){
-	//Make constants for testing
+	//Make constants for testing (change these to test different cases
+	//Loop test case related
+	const int LOOP_START = 0;
+	const int PRIORITY_DIVISION = 56;
+	const int NUM_TEST_DIVISIONS = 985;
+	const int TEST_SIZE = PRIORITY_DIVISION * NUM_TEST_DIVISIONS;
+	//Other consts
 	const int STRING_MAX = 256;
 	const int TOP_PRIORITY = 0;
-	const int LOOP_START = 0;
-	const int PRIORITY_DIVISION = 10;
-	const int PRIORITY_INCREASE = 3;
-	const int NUM_TEST_DIVISIONS = 10;
-	const int TEST_SIZE = PRIORITY_DIVISION * NUM_TEST_DIVISIONS;
-	const int TEST_SIZE_2 = 20;
+	const int PRIORITY_INCREASE = 4;
+	const int TEST_SIZE_2 = 37;
+	//Don't change these constants
+	const int QUEUE_EMPTY = 0;
 
 	//Error message string
 	char szMsg[STRING_MAX];
@@ -92,7 +96,9 @@ int main(){
 	//Make pqueue and check it's correct
 	PriorityQueue sQueue;
 	pqueueCreate(&sQueue);
-	assert(pqueueIsEmpty(&sQueue)&&pqueueSize(&sQueue) == 0, "Queue is empty", "Why does queue have data or size does not match empty?");
+	assert(pqueueIsEmpty(&sQueue)&&pqueueSize(&sQueue) == QUEUE_EMPTY,
+			"Queue is empty",
+			"Why does queue have data or size does not match empty?");
 
 	//Simple enqueue test
 	pqueueEnqueue(&sQueue, &testInt, sizeof(int), TOP_PRIORITY);
@@ -101,7 +107,8 @@ int main(){
 	//Simple peek test
 	pqueuePeek(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 	assert(bufferInt == testInt, "Peek correct", "Peek error");
-	assert(bufferPriority == TOP_PRIORITY, "Priority check correct", "Priority changed somehow?");
+	assert(bufferPriority == TOP_PRIORITY, "Priority check correct",
+			"Priority changed somehow?");
 	bufferInt = 0;
 	bufferPriority = 1;
 
@@ -129,14 +136,17 @@ int main(){
 	}
 	assert(pqueueSize(&sQueue) == (TEST_SIZE - LOOP_START + TEST_SIZE_2 - LOOP_START), "Queue is the correct size", "Weird number of queue elements");
 	pqueuePeek(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
-	assert(bufferInt == LOOP_START, "Loop order seems correct, will confirm", "unexpected first number");
+	assert(bufferInt == LOOP_START, "Loop order seems correct, will confirm",
+			"unexpected first number");
 
 	//Check added info in above loop
 	for(i = LOOP_START; loopCheck && i < TEST_SIZE_2; i++){
 		pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 		if(i != bufferInt || i/PRIORITY_DIVISION != bufferPriority){
 			loopCheck = false;
-			sprintf(szMsg, "Error in second set added. Value is %d, expected %d, priority is %d, expected %d", bufferInt, i, bufferPriority, i/PRIORITY_DIVISION);
+			sprintf(szMsg,
+					"Error in second set added. Value is %d, expected %d, priority is %d, expected %d",
+					bufferInt, i, bufferPriority, i/PRIORITY_DIVISION);
 		}
 		bufferInt = 0;
 		bufferPriority = 0;
@@ -147,21 +157,26 @@ int main(){
 	//Loop to check first set of nums added and priority increase
 	loopCheck = true;
 	for(loopTestLocation = LOOP_START; loopCheck &&
-		loopTestLocation < NUM_TEST_DIVISIONS; loopTestLocation++){
+		loopTestLocation < PRIORITY_DIVISION; loopTestLocation++){
 		//loop to check each priority
-		for(i = LOOP_START; loopCheck && i < PRIORITY_DIVISION; i++){
+		for(i = LOOP_START; loopCheck && i < NUM_TEST_DIVISIONS; i++){
 			pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 			if(bufferInt != i * PRIORITY_DIVISION + loopTestLocation
 					|| bufferPriority != PRIORITY_INCREASE + loopTestLocation){
 				loopCheck = false;
-				sprintf(szMsg, "Value is %d, expected %d, priority is %d, expected %d",
+				sprintf(szMsg, "Value is %d, expected %d, priority is %d, expected %d (loop numbers: %d, %d)",
 						bufferInt, i * PRIORITY_DIVISION + loopTestLocation,
-						bufferPriority, loopTestLocation);
+						bufferPriority, loopTestLocation, loopTestLocation, i);
 			}
 			bufferInt = 0;
 			bufferPriority = 0;
 		}
-		assert(loopCheck, "this check successful", szMsg);
+		if(!loopCheck){
+			failure(szMsg);
+		}
+	}
+	if(loopCheck){
+		success("Loop to check confirms all items added successfully");
 	}
 	assert(pqueueIsEmpty(&sQueue),"All items dequeued successfully",
 			"items still enqueued");
