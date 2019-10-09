@@ -35,6 +35,17 @@ static void processError (const char *pszFunctionName, int errorCode){
 //*************************************************************************
 //										Allocation and Deallocation
 //*************************************************************************
+
+/**************************************************************************
+ Function: 	 	pqueueCreate
+
+ Description: Initialize psQueue immediately after creating it to ensure
+ 	 	 	 	 	 	 	that it has correct values
+
+ Parameters:	psQueue - pointer to queue to initialize
+
+ Returned:	 	None
+ *************************************************************************/
 extern void pqueueCreate (PriorityQueuePtr psQueue
 													/*, 	cmpFunction cmpFunct */){
 	if(psQueue == NULL){
@@ -46,7 +57,15 @@ extern void pqueueCreate (PriorityQueuePtr psQueue
 // results: If PQ can be created, then PQ exists and is empty
 //					otherwise, ERROR_NO_PQ_CREATE
 
+/**************************************************************************
+ Function: 	 	pqueueTerminate
 
+ Description: Empty all of pqueue safely (without memory leaks)
+
+ Parameters:	psQueue - pointer to queue to terminate
+
+ Returned:	 	None
+ *************************************************************************/
 extern void pqueueTerminate (PriorityQueuePtr psQueue){
 	if(psQueue == NULL){
 		processError("pqueueTerminate", ERROR_NO_PQ_TERMINATE);
@@ -68,6 +87,17 @@ extern void pqueueTerminate (PriorityQueuePtr psQueue){
 // results: If PQ can be terminated, then PQ no longer exists and is empty
 //				   otherwise, ERROR_NO_PQ_TERMINATE
 
+/**************************************************************************
+ Function: 	 	pqueueLoadErrorMessages
+
+ Description: Initializes the string of error messages. LOAD_PQ_ERRORS is a
+ 	 	 	 	 	 	  macro defined in the header file. Also calls function to load
+ 	 	 	 	 	 	  list errors
+
+ Parameters:	None
+
+ Returned:	 	None
+ *************************************************************************/
 extern void pqueueLoadErrorMessages (){
 	LOAD_PQ_ERRORS
 	lstLoadErrorMessages();
@@ -79,6 +109,15 @@ extern void pqueueLoadErrorMessages (){
 //									Checking number of elements in priority queue
 //*************************************************************************
 
+/**************************************************************************
+ Function: 	 	pqueueSize
+
+ Description: Find size of pqueue
+
+ Parameters:	psQueue - pointer to queue to find size of
+
+ Returned:	 	None
+ *************************************************************************/
 extern int pqueueSize (const PriorityQueuePtr psQueue){
 	return lstSize(&psQueue->sTheList);
 }

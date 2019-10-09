@@ -67,14 +67,14 @@ int main(){
 	//Make constants for testing (change these to test different cases
 	//Loop test case related
 	const int LOOP_START = 0;
-	const int PRIORITY_DIVISION = 56;
-	const int NUM_TEST_DIVISIONS = 985;
+	const int PRIORITY_DIVISION = 100;
+	const int NUM_TEST_DIVISIONS = 1000;
 	const int TEST_SIZE = PRIORITY_DIVISION * NUM_TEST_DIVISIONS;
 	//Other consts
 	const int STRING_MAX = 256;
 	const int TOP_PRIORITY = 0;
 	const int PRIORITY_INCREASE = 4;
-	const int TEST_SIZE_2 = 37;
+	const int TEST_SIZE_2 = 150;
 	//Don't change these constants
 	const int QUEUE_EMPTY = 0;
 
@@ -100,7 +100,7 @@ int main(){
 			"Queue is empty",
 			"Why does queue have data or size does not match empty?");
 
-	//Simple enqueue test
+	//Simple enqueue testassert(loopCheck, "this check successful", szMsg);
 	pqueueEnqueue(&sQueue, &testInt, sizeof(int), TOP_PRIORITY);
 	assert(pqueueSize(&sQueue) == 1, "Queue has an element", "Enqueue error");
 
