@@ -1,9 +1,11 @@
-/*
- * pqueuetester.c
- *
- *  Created on: Oct 4, 2019
- *      Author: oste8741
- */
+/**************************************************************************
+ File name:		  pqueuedriver.c
+ Author:        Frisk Oster
+ Date:          10/04/19
+ Class:         CS300
+ Assignment:    Priority Queue Implementation Test
+ Purpose:       This file implements the priority queue data structure.
+ *************************************************************************/
 #include "../include/pqueue.h"
 
 /****************************************************************************
