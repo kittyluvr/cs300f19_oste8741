@@ -59,8 +59,9 @@ extern void pqueueTerminate (PriorityQueuePtr psQueue){
 		lstFirst(&psQueue->sTheList);
 		lstDeleteCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 		free(psTemp->pData);
+		free(psTemp);
 	}
-  
+
   lstTerminate(&psQueue->sTheList);
 	return;
 }
@@ -140,8 +141,11 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 				lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
 			}
 		}
-		free(psTemp);
 	}
+
+	free(psTemp);
+	free(psNew);
+
 	return;
 }
 // requires: psQueue is not full
@@ -170,6 +174,7 @@ extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 	memcpy(pBuffer, psTemp->pData, size);
 	*pPriority = psTemp->priority;
 
+	free(psTemp->pData);
 	free(psTemp);
 
 	return pBuffer;
@@ -197,6 +202,7 @@ extern void *pqueuePeek (PriorityQueuePtr psQueue, void *pBuffer, int size,
 	}
 
 	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	lstFirst(&psQueue->sTheList);
 	lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 	*priority = psTemp->priority;
 	memcpy(pBuffer, psTemp->pData, size);
@@ -218,7 +224,8 @@ extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 		processError("pqueueChangePriority", ERROR_INVALID_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	PriorityQueueElementPtr psTemp =
+			(PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
 
 	//if PQ is empty then do nothing
 	if(!pqueueIsEmpty(psQueue)){
@@ -233,6 +240,7 @@ extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 			lstUpdateCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
 		}
 	}
+	free(psTemp);
 	return;
 }
 // results: The priority of all elements is increased by the amount in

@@ -84,20 +84,23 @@ int main(){
 	bufferPriority = 1;
 	pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 	assert(bufferInt == testInt, "Dequeue correct", "Dequeue error");
-	assert(bufferPriority == TOP_PRIORITY, "Priority check correct", "Priority changed somehow?");
-	assert(pqueueIsEmpty(&sQueue), "Queue is empty again", "Queue element still there?");
+	assert(bufferPriority == TOP_PRIORITY, "Priority check correct",
+			"Priority changed somehow?");
+	assert(pqueueIsEmpty(&sQueue), "Queue is empty again",
+			"Queue element still there?");
 
 	for(i = LOOP_START; i < TEST_SIZE; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i % 10);
 	}
-	assert(pqueueSize(&sQueue) == TEST_SIZE - LOOP_START, "Queue is the correct size", "Weird number of queue elements");
+	assert(pqueueSize(&sQueue) == TEST_SIZE - LOOP_START,
+			"Queue is the correct size", "Weird number of queue elements");
 	pqueueChangePriority(&sQueue, PRIORITY_INCREASE);
 	for(i = LOOP_START; i < TEST_SIZE_2; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i/10);
 	}
 	assert(pqueueSize(&sQueue) == (TEST_SIZE - LOOP_START + TEST_SIZE_2 - LOOP_START), "Queue is the correct size", "Weird number of queue elements");
 	pqueuePeek(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
-	assert(bufferInt = LOOP_START, "Loop order seems correct, will confirm", "unexpected first number");
+	assert(bufferInt == LOOP_START, "Loop order seems correct, will confirm", "unexpected first number");
 
 	for(i = LOOP_START; loopCheck && i < TEST_SIZE_2; i++){
 		pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
