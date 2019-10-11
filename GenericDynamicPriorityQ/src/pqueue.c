@@ -71,14 +71,14 @@ extern void pqueueTerminate (PriorityQueuePtr psQueue){
 		processError("pqueueTerminate", ERROR_NO_PQ_TERMINATE);
 	}
 
-	PriorityQueueElementPtr psTemp = NULL;
+	PriorityQueueElement sTemp;
 
-	while(!lstIsEmpty(&psQueue->sTheList)){
-		psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	if(!lstIsEmpty(&psQueue->sTheList)){
 		lstFirst(&psQueue->sTheList);
-		lstDeleteCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-		free(psTemp->pData);
-		free(psTemp);
+	}
+	while(!lstIsEmpty(&psQueue->sTheList)){
+		lstDeleteCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+		free(sTemp.pData);
 	}
 
   lstTerminate(&psQueue->sTheList);
@@ -167,7 +167,7 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 	}
 
 	//Temp to look at stuff currently in queue
-	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	PriorityQueueElement sTemp;
 	//The element to be added to the list backing the queue
 	PriorityQueueElementPtr psNew = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
 	psNew->priority = priority;
@@ -181,32 +181,31 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 	else{
 		//Check if lowest priority
 		lstLast(&psQueue->sTheList);
-		lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-		if(psNew->priority >= psTemp->priority){
+		lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+		if(psNew->priority >= sTemp.priority){
 			lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
 		}
 
 		else{
 			//Check if highest priority
 			lstFirst(&psQueue->sTheList);
-			lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-			if(psNew->priority < psTemp->priority){
+			lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+			if(psNew->priority < sTemp.priority){
 				lstInsertBefore(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
 			}
 
 			else{
 				//Otherwise walk until next is lower priority
-				lstPeekNext(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-				while(psNew->priority >= psTemp->priority){
+				lstPeekNext(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+				while(psNew->priority >= sTemp.priority){
 					lstNext(&psQueue->sTheList);
-					lstPeekNext(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
+					lstPeekNext(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
 				}
 				lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
 			}
 		}
 	}
 
-	free(psTemp);
 	free(psNew);
 
 	return;
@@ -242,15 +241,14 @@ extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 		processError("pqueueDequeue", ERROR_EMPTY_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	PriorityQueueElement sTemp;
 
 	lstFirst(&psQueue->sTheList);
-	lstDeleteCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-	memcpy(pBuffer, psTemp->pData, size);
-	*pPriority = psTemp->priority;
+	lstDeleteCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+	memcpy(pBuffer, sTemp.pData, size);
+	*pPriority = sTemp.priority;
 
-	free(psTemp->pData);
-	free(psTemp);
+	free(sTemp.pData);
 
 	return pBuffer;
 }
@@ -287,13 +285,11 @@ extern void *pqueuePeek (PriorityQueuePtr psQueue, void *pBuffer, int size,
 		processError("pqueuePeek", ERROR_EMPTY_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	PriorityQueueElement sTemp;
 	lstFirst(&psQueue->sTheList);
-	lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-	*priority = psTemp->priority;
-	memcpy(pBuffer, psTemp->pData, size);
-
-	free(psTemp);
+	lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+	*priority =sTemp.priority;
+	memcpy(pBuffer, sTemp.pData, size);
 
 	return pBuffer;
 }
@@ -320,23 +316,21 @@ extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 		processError("pqueueChangePriority", ERROR_INVALID_PQ);
 	}
 
-	PriorityQueueElementPtr psTemp =
-			(PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	PriorityQueueElement sTemp;
 
 	//if PQ is empty then do nothing
 	if(!pqueueIsEmpty(psQueue)){
 		lstFirst(&psQueue->sTheList);
-		lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-		psTemp->priority += change;
-		lstUpdateCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
+		lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+		sTemp.priority += change;
+		lstUpdateCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
 		while(lstHasNext(&psQueue->sTheList)){
 			lstNext(&psQueue->sTheList);
-			lstPeek(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
-			psTemp->priority += change;
-			lstUpdateCurrent(&psQueue->sTheList, psTemp, sizeof(PriorityQueueElement));
+			lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+			sTemp.priority += change;
+			lstUpdateCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
 		}
 	}
-	free(psTemp);
 	return;
 }
 // results: The priority of all elements is increased by the amount in
