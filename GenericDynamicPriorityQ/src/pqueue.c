@@ -116,7 +116,7 @@ extern void pqueueLoadErrorMessages (){
 
  Parameters:	psQueue - pointer to queue to find size of
 
- Returned:	 	None
+ Returned:	 	num elements in psQueue
  *************************************************************************/
 extern int pqueueSize (const PriorityQueuePtr psQueue){
 	return lstSize(&psQueue->sTheList);
@@ -124,6 +124,15 @@ extern int pqueueSize (const PriorityQueuePtr psQueue){
 // results: Returns the number of elements in the PQ
 // 					error code priority: ERROR_INVALID_PQ if PQ is NULL
 
+/**************************************************************************
+ Function: 	 	pqueueIsEmpty
+
+ Description: Return whether or not the pqueueIsEmpty
+
+ Parameters:	psQueue - pointer to queue to check
+
+ Returned:	 	empty or not
+ *************************************************************************/
 extern bool pqueueIsEmpty (const PriorityQueuePtr psQueue){
 	return lstIsEmpty(&psQueue->sTheList);
 }
@@ -135,6 +144,19 @@ extern bool pqueueIsEmpty (const PriorityQueuePtr psQueue){
 //									Inserting and retrieving values
 //*************************************************************************
 
+/**************************************************************************
+ Function: 	 	pqueueEnqueue
+
+ Description: Add an element to pqueue based on priority
+
+ Parameters:	psQueue  - pointer to queue
+ 	 	 	 	 	 	  pBuffer  - pointer to data to copy into queue
+ 	 	 	 	 	 	  size		 - size of pbuffer data type
+ 	 	 	 	 	 	  priority - priority for placing in queue. Lower number =
+ 	 	 	 	 	 	  					 higher priority
+
+ Returned:	 	None
+ *************************************************************************/
 extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 										int size, int priority){
 	if(psQueue == NULL){
@@ -144,7 +166,9 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 		processError("pqueueEnqueue", ERROR_NULL_PQ_PTR);
 	}
 
+	//Temp to look at stuff currently in queue
 	PriorityQueueElementPtr psTemp = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
+	//The element to be added to the list backing the queue
 	PriorityQueueElementPtr psNew = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
 	psNew->priority = priority;
 	psNew->pData = malloc(size);
@@ -194,6 +218,18 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 //															 ERROR_FULL_PQ
 
 
+/**************************************************************************
+ Function: 	 	pqueueDequeue
+
+ Description: Remove first element from queue
+
+ Parameters:	psQueue  - pointer to queue
+ 	 	 	 	 	 	  pBuffer  - pointer to copy queue data into
+ 	 	 	 	 	 	  size		 - size of pbuffer data type
+ 	 	 	 	 	 	  priority - priority of element in queue.
+
+ Returned:	 	pBuffer (pointer to data copied from queue element)
+ *************************************************************************/
 extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 														int size, int  *pPriority){
 	if(psQueue == NULL){
@@ -218,7 +254,6 @@ extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 
 	return pBuffer;
 }
-
 // requires: psQueue is not empty
 // results: Remove the element from the front of a non-empty queue
 //					error code priority: ERROR_INVALID_PQ, ERROR_NULL_PQ_PTR,
@@ -228,6 +263,18 @@ extern void *pqueueDequeue (PriorityQueuePtr psQueue, void *pBuffer,
 //													Peek Operations
 //*************************************************************************
 
+/**************************************************************************
+ Function: 	 	pqueuePeek
+
+ Description: Copy data from first element from queue
+
+ Parameters:	psQueue  - pointer to queue
+ 	 	 	 	 	 	  pBuffer  - pointer to copy queue data into
+ 	 	 	 	 	 	  size		 - size of pbuffer data type
+ 	 	 	 	 	 	  priority - priority of element in queue.
+
+ Returned:	 	pBuffer (pointer to data copied from queue element)
+ *************************************************************************/
 extern void *pqueuePeek (PriorityQueuePtr psQueue, void *pBuffer, int size,
 								 int *priority){
 	if(psQueue == NULL){
@@ -257,6 +304,16 @@ extern void *pqueuePeek (PriorityQueuePtr psQueue, void *pBuffer, int size,
 // 						error code priority: ERROR_INVALID_PQ, ERROR_NULL_PQ_PTR,
 //																 ERROR_EMPTY_PQ
 
+/**************************************************************************
+ Function: 	 	pqueueChangePriority
+
+ Description: Increase/decrease priority of all elements in queue
+
+ Parameters:	psQueue - pointer to queue
+ 	 	 	 	 	 	  change  - amount to change priority by
+
+ Returned:	 	none
+ *************************************************************************/
 extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 																	int change){
 	if(psQueue == NULL){
