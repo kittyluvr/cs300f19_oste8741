@@ -67,14 +67,15 @@ int main(){
 	//Make constants for testing (change these to test different cases
 	//Loop test case related
 	const int LOOP_START = 0;
-	const int PRIORITY_DIVISION = 100;
-	const int NUM_TEST_DIVISIONS = 1000;
+	const int PRIORITY_DIVISION = 50;
+	const int NUM_TEST_DIVISIONS = 200;
 	const int TEST_SIZE = PRIORITY_DIVISION * NUM_TEST_DIVISIONS;
 	//Other consts
 	const int STRING_MAX = 256;
 	const int TOP_PRIORITY = 0;
-	const int PRIORITY_INCREASE = 4;
-	const int TEST_SIZE_2 = 150;
+	const int PRIORITY_INCREASE = 10;
+	const int TEST_SIZE_2 = 250;
+	const int MASSIVE_TEST_SIZE = 1000000;
 	//Don't change these constants
 	const int QUEUE_EMPTY = 0;
 
@@ -186,9 +187,11 @@ int main(){
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
 	//check for terminate with items in the queue
-	for(i = LOOP_START; i < PRIORITY_DIVISION; i++){
+	for(i = LOOP_START; i < MASSIVE_TEST_SIZE; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i);
 	}
+	assert(pqueueSize(&sQueue) == MASSIVE_TEST_SIZE - LOOP_START,
+			"Large testcase elements added", "Error adding many items");
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
