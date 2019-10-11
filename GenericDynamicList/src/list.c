@@ -19,7 +19,6 @@ static ListElementPtr makeNewEmpty(ListElementPtr);
 static ListElementPtr makeNewFilled(ListElementPtr, const void *, int);
 static ListElementPtr findPrev(ListPtr);
 static void assign(ListElementPtr, const void*, int);
-static void updateLast(ListPtr);
 static void noSaveDelete(ListPtr);
 
 /**************************************************************************
@@ -316,7 +315,7 @@ extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 	if(pBuffer == NULL){
 		processError("lstInsertAfter", ERROR_NULL_PTR);
 	}
-
+	bool isLast = psList->psCurrent == psList->psLast;
 	if(lstIsEmpty(psList)){
 		ListElementPtr psNew = makeNewFilled(NULL, pBuffer, size);
 		psList->psFirst = psNew;
@@ -333,7 +332,11 @@ extern void lstInsertAfter (ListPtr psList, const void *pBuffer, int size){
 		psList->psCurrent = psList->psCurrent->psNext;
 		psList->numElements++;
 	}
-	updateLast(psList);
+
+	//Check if Last
+	if(isLast){
+		psList->psLast = psList->psCurrent;
+	}
 	return;
 }
 
@@ -514,25 +517,6 @@ static void assign(ListElementPtr psElement, const void *pUpdate, int size){
 }
 
 /**************************************************************************
- Function: 	 	updateLast
-
- Description: Ensures that the last pointer points to the last element
-
- Parameters:	psList - pointer to the list
-
- Returned:	 	none
- *************************************************************************/
-static void updateLast(ListPtr psList){
-	ListElementPtr psTemp = NULL;
-	psTemp = psList->psCurrent;
-	while(psTemp != NULL && psTemp->psNext != NULL){
-		psTemp = psTemp->psNext;
-	}
-	psList->psLast = psTemp;
-	return;
-}
-
-/**************************************************************************
  Function: 	 	noSaveDelete
 
  Description: Deletes current without outputting the data. Used within
@@ -544,6 +528,7 @@ static void updateLast(ListPtr psList){
  *************************************************************************/
 static void noSaveDelete(ListPtr psList){
 	ListElementPtr psTemp = psList->psCurrent->psNext;
+	bool isLast = psList->psCurrent == psList->psLast;
 	free(psList->psCurrent->pData);
 	if(psList->psCurrent == psList->psFirst){
 		psList->psFirst = psTemp;
@@ -556,6 +541,10 @@ static void noSaveDelete(ListPtr psList){
 		psList->psCurrent->psNext = psTemp;
 	}
 	psList->numElements--;
-	updateLast(psList);
+
+	//Check if last
+	if(isLast){
+		psList->psLast = psList->psCurrent;
+	}
 	return;
 }
