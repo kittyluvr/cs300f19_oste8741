@@ -186,12 +186,12 @@ int main(){
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
-	//check for terminate with items in the queue
+	//check for terminate with items in the queue + check many items
 	for(i = LOOP_START; i < MASSIVE_TEST_SIZE; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i);
 	}
 	assert(pqueueSize(&sQueue) == MASSIVE_TEST_SIZE - LOOP_START,
-			"Large testcase elements added", "Error adding many items");
+			"Large test case elements added", "Error adding many items");
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
