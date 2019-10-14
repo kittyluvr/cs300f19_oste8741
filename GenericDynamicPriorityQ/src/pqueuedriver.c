@@ -76,6 +76,7 @@ int main(){
 	const int PRIORITY_INCREASE = 10;
 	const int TEST_SIZE_2 = 250;
 	const int MASSIVE_TEST_SIZE = 1000000;
+	const int BIG_TEST_PRIORITY = PRIORITY_DIVISION * 2;
 	//Don't change these constants
 	const int QUEUE_EMPTY = 0;
 
@@ -188,10 +189,27 @@ int main(){
 
 	//check for terminate with items in the queue + check many items
 	for(i = LOOP_START; i < MASSIVE_TEST_SIZE; i++){
-		pqueueEnqueue(&sQueue, &i, sizeof(int), i);
+		pqueueEnqueue(&sQueue, &i, sizeof(int), BIG_TEST_PRIORITY);
 	}
 	assert(pqueueSize(&sQueue) == MASSIVE_TEST_SIZE - LOOP_START,
 			"Large test case elements added", "Error adding many items");
+	for(i = LOOP_START; i < TEST_SIZE_2; i++){
+		pqueueEnqueue(&sQueue, &i, sizeof(int), i/PRIORITY_DIVISION);
+	}
+	assert(pqueueSize(&sQueue) == (MASSIVE_TEST_SIZE - LOOP_START + TEST_SIZE_2 - LOOP_START), "Queue is the correct size", "Weird number of queue elements");
+	for(i = LOOP_START; loopCheck && i < TEST_SIZE_2; i++){
+		pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
+		if(i != bufferInt || i/PRIORITY_DIVISION != bufferPriority){
+			loopCheck = false;
+			sprintf(szMsg,
+					"Error in adding to large queue. Value is %d, expected %d, priority is %d, expected %d",
+					bufferInt, i, bufferPriority, i/PRIORITY_DIVISION);
+		}
+		bufferInt = 0;
+		bufferPriority = 0;
+	}
+	assert(loopCheck, "When queue has many items queue/enqueue still works",
+			szMsg);
 	pqueueTerminate(&sQueue);
 	assert(pqueueIsEmpty(&sQueue), "Terminate Successful", "Terminate Error");
 
