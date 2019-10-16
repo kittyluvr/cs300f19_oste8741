@@ -39,7 +39,7 @@ valgrind: bin/pqueuedriver
 
 tarball: clean
 	tar czf ../cs300_3_Oste8741.tar.gz ../GenericDynamicList \
-../GenericDynamicPriority
+../GenericDynamicPriorityQ
 
 clean:
 	rm -rf bin/*.o bin/pqueuedriver
