@@ -136,7 +136,9 @@ int main(){
 	for(i = LOOP_START; i < TEST_SIZE_2; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i/PRIORITY_DIVISION);
 	}
-	assert(pqueueSize(&sQueue) == (TEST_SIZE - LOOP_START + TEST_SIZE_2 - LOOP_START), "Queue is the correct size", "Weird number of queue elements");
+	assert(pqueueSize(&sQueue) == (TEST_SIZE - LOOP_START +
+			TEST_SIZE_2 - LOOP_START), "Queue is the correct size",
+			"Weird number of queue elements");
 	pqueuePeek(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 	assert(bufferInt == LOOP_START, "Loop order seems correct, will confirm",
 			"unexpected first number");
@@ -147,14 +149,14 @@ int main(){
 		if(i != bufferInt || i/PRIORITY_DIVISION != bufferPriority){
 			loopCheck = false;
 			sprintf(szMsg,
-					"Error in second set added. Value is %d, expected %d, priority is %d, expected %d",
-					bufferInt, i, bufferPriority, i/PRIORITY_DIVISION);
+					"Error in second set added. Received %d, %d, expected %d %d",
+					bufferInt, bufferPriority, i, i/PRIORITY_DIVISION);
 		}
 		bufferInt = 0;
 		bufferPriority = 0;
 	}
-	assert(loopCheck, "Change Priority and second set adding at start successful",
-			szMsg);
+	assert(loopCheck,
+			"Change Priority and second set adding at start successful", szMsg);
 
 	//Loop to check first set of nums added and priority increase
 	loopCheck = true;
@@ -166,9 +168,10 @@ int main(){
 			if(bufferInt != i * PRIORITY_DIVISION + loopTestLocation
 					|| bufferPriority != PRIORITY_INCREASE + loopTestLocation){
 				loopCheck = false;
-				sprintf(szMsg, "Value is %d, expected %d, priority is %d, expected %d (loop numbers: %d, %d)",
-						bufferInt, i * PRIORITY_DIVISION + loopTestLocation,
-						bufferPriority, loopTestLocation, loopTestLocation, i);
+				sprintf(szMsg,
+					"Received %d, %d, expected %d, %d (loop numbers: %d, %d)",
+					bufferInt, bufferPriority, i * PRIORITY_DIVISION + loopTestLocation,
+					loopTestLocation, loopTestLocation, i);
 			}
 			bufferInt = 0;
 			bufferPriority = 0;
@@ -196,14 +199,16 @@ int main(){
 	for(i = LOOP_START; i < TEST_SIZE_2; i++){
 		pqueueEnqueue(&sQueue, &i, sizeof(int), i/PRIORITY_DIVISION);
 	}
-	assert(pqueueSize(&sQueue) == (MASSIVE_TEST_SIZE - LOOP_START + TEST_SIZE_2 - LOOP_START), "Queue is the correct size", "Weird number of queue elements");
+	assert(pqueueSize(&sQueue) == (MASSIVE_TEST_SIZE - LOOP_START +
+			TEST_SIZE_2 - LOOP_START), "Queue is the correct size",
+			"Weird number of queue elements");
 	for(i = LOOP_START; loopCheck && i < TEST_SIZE_2; i++){
 		pqueueDequeue(&sQueue, &bufferInt, sizeof(int), &bufferPriority);
 		if(i != bufferInt || i/PRIORITY_DIVISION != bufferPriority){
 			loopCheck = false;
 			sprintf(szMsg,
-					"Error in adding to large queue. Value is %d, expected %d, priority is %d, expected %d",
-					bufferInt, i, bufferPriority, i/PRIORITY_DIVISION);
+					"Error in adding to large queue. Received %d, %d, expected %d, %d",
+					bufferInt, bufferPriority, i, i/PRIORITY_DIVISION);
 		}
 		bufferInt = 0;
 		bufferPriority = 0;

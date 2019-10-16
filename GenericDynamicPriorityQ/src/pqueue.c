@@ -77,7 +77,8 @@ extern void pqueueTerminate (PriorityQueuePtr psQueue){
 		lstFirst(&psQueue->sTheList);
 	}
 	while(!lstIsEmpty(&psQueue->sTheList)){
-		lstDeleteCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+		lstDeleteCurrent(&psQueue->sTheList, &sTemp,
+				sizeof(PriorityQueueElement));
 		free(sTemp.pData);
 	}
 
@@ -169,45 +170,46 @@ extern void pqueueEnqueue (PriorityQueuePtr psQueue, const void *pBuffer,
 	//Temp to look at stuff currently in queue
 	PriorityQueueElement sTemp;
 	//The element to be added to the list backing the queue
-	PriorityQueueElementPtr psNew = (PriorityQueueElementPtr)malloc(sizeof(PriorityQueueElement));
-	psNew->priority = priority;
-	psNew->pData = malloc(size);
-	memcpy(psNew->pData, pBuffer, size);
+	PriorityQueueElement sNew;
+	sNew.priority = priority;
+	sNew.pData = malloc(size);
+	memcpy(sNew.pData, pBuffer, size);
 
 	if(lstIsEmpty(&psQueue->sTheList)){
-		lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
+		lstInsertAfter(&psQueue->sTheList, &sNew, sizeof(PriorityQueueElement));
 	}
 
 	else{
 		//Check if lowest priority
 		lstLast(&psQueue->sTheList);
 		lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
-		if(psNew->priority >= sTemp.priority){
-			lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
+		if(sNew.priority >= sTemp.priority){
+			lstInsertAfter(&psQueue->sTheList, &sNew, sizeof(PriorityQueueElement));
 		}
 
 		else{
 			//Check if highest priority
 			lstFirst(&psQueue->sTheList);
 			lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
-			if(psNew->priority < sTemp.priority){
-				lstInsertBefore(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
+			if(sNew.priority < sTemp.priority){
+				lstInsertBefore(&psQueue->sTheList, &sNew,
+						sizeof(PriorityQueueElement));
 			}
 
 			else{
 				//Otherwise walk until next is lower priority
-				lstPeekNext(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
-				while(psNew->priority >= sTemp.priority){
+				lstPeekNext(&psQueue->sTheList, &sTemp,
+						sizeof(PriorityQueueElement));
+				while(sNew.priority >= sTemp.priority){
 					lstNext(&psQueue->sTheList);
-					lstPeekNext(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+					lstPeekNext(&psQueue->sTheList, &sTemp,
+							sizeof(PriorityQueueElement));
 				}
-				lstInsertAfter(&psQueue->sTheList, psNew, sizeof(PriorityQueueElement));
+				lstInsertAfter(&psQueue->sTheList, &sNew,
+						sizeof(PriorityQueueElement));
 			}
 		}
 	}
-
-	free(psNew);
-
 	return;
 }
 // requires: psQueue is not full
@@ -328,7 +330,8 @@ extern void pqueueChangePriority (PriorityQueuePtr psQueue,
 			lstNext(&psQueue->sTheList);
 			lstPeek(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
 			sTemp.priority += change;
-			lstUpdateCurrent(&psQueue->sTheList, &sTemp, sizeof(PriorityQueueElement));
+			lstUpdateCurrent(&psQueue->sTheList, &sTemp,
+					sizeof(PriorityQueueElement));
 		}
 	}
 	return;
