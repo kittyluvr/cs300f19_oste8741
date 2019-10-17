@@ -64,5 +64,13 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
  Returned:	 	none
  ****************************************************************************/
 int main(){
+	Queue sQueue;
+	queueCreate(&sQueue);
+	assert(queueIsEmpty(&sQueue), "Queue exists and is empty",
+			"Error in create.");
+
+	queueTerminate(&sQueue);
+	assert(queueIsEmpty(&sQueue), "Queue terminate successful",
+			"Error in terminate.");
 	return EXIT_SUCCESS;
 }

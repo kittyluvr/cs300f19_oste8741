@@ -2,30 +2,66 @@
 #include <stdbool.h>
 #include "../../GenericDynamicPriorityQ/include/pqueue.h"
 
+char gszQErrors[NUMBER_OF_LIST_ERRORS][MAX_ERROR_LIST_CHARS];
+
+/**************************************************************************
+ Function: 	 	processError
+
+ Description: Process the error code passed to this routine
+
+ Parameters:	pszFunctionName - function causing the error
+ 	 	 	 	 	 	 	errorCode 	    - identifies the stack error
+
+ Returned:	 	None
+ *************************************************************************/
+static void processError (const char *pszFunctionName, int errorCode){
+	printf("Function: %s %s \n ", pszFunctionName,
+					 gszQErrors[errorCode]);
+	exit (EXIT_FAILURE);
+}
+
 /**************************************************************************
 *										Allocation and Deallocation
 **************************************************************************/
-extern void queueCreate (QueuePtr psQueue);
+extern void queueCreate (QueuePtr psQueue){
+	if(psQueue == NULL){
+		processError("queueCreate", ERROR_NO_Q_CREATE);
+	}
+	pqueueCreate(&psQueue->sTheQueue);
+	return;
+}
 // results: If Q can be created, then Q exists and is empty
 //					otherwise, ERROR_NO_Q_CREATE
 
 
-extern void queueTerminate (QueuePtr psQueue);
+extern void queueTerminate (QueuePtr psQueue){
+	if(psQueue == NULL){
+		processError("queueTerminate", ERROR_NO_Q_TERMINATE);
+	}
+	pqueueTerminate(&psQueue->sTheQueue);
+	return;
+}
 // results: If Q can be terminated, then Q no longer exists and is empty
 //				   otherwise, ERROR_NO_Q_TERMINATE
 
-extern void queueLoadErrorMessages ();
+extern void queueLoadErrorMessages (){
+	LOAD_Q_ERRORS
+}
 // results:	Loads the error message strings for the error handler to use
 //					No error conditions
 
 /**************************************************************************
 *									Checking number of elements in queue
 **************************************************************************/
-extern int queueSize (const QueuePtr psQueue);
+extern int queueSize (const QueuePtr psQueue){
+	return pqueueSize(&psQueue->sTheQueue);
+}
 // results: Returns the number of elements in the Q
 // 					error code priority: ERROR_INVALID_Q if Q is NULL
 
-extern bool queueIsEmpty (const QueuePtr psQueue);
+extern bool queueIsEmpty (const QueuePtr psQueue){
+	return pqueueIsEmpty(&psQueue->sTheQueue);
+}
 // results: If Q is empty, return true; otherwise, return false
 // 					error code priority: ERROR_INVALID_Q
 
