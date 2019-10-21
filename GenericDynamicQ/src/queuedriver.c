@@ -64,10 +64,43 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
  Returned:	 	none
  ****************************************************************************/
 int main(){
+	const int LOOP_SIZE  = 1000000;
+	const int LOOP_START = 0;
+	const int TEST_INT = 23;
+	const int STRING_MAX = 128;
+
+	int i;
+	int buffer;
+	bool loopCheck = true;
+
+	char szMsg[STRING_MAX];
+
 	Queue sQueue;
 	queueCreate(&sQueue);
 	assert(queueIsEmpty(&sQueue), "Queue exists and is empty",
 			"Error in create.");
+
+	queueEnqueue(&sQueue, &TEST_INT, sizeof(int));
+	queuePeek(&sQueue, &buffer, sizeof(int));
+	assert(buffer == TEST_INT, "Peek works correctly", "Peek error");
+	queueDequeue(&sQueue, &buffer, sizeof(int));
+	assert(buffer == TEST_INT && queueIsEmpty(&sQueue), "Dequeue successful",
+			"Error in dequeue");
+
+	for(i = 0; i < LOOP_SIZE; i++){
+		queueEnqueue(&sQueue, &i, sizeof(int));
+	}
+	assert(queueSize(&sQueue) == LOOP_SIZE, "Enqueued large test", "Enqueue error");
+	for(i = 0; loopCheck && i < LOOP_SIZE; i++){
+		queueDequeue(&sQueue, &buffer, sizeof(int));
+		if(buffer != i){
+			loopCheck = false;
+			sprintf(szMsg,"Error in big test. Expected %d, received %d", i, buffer);
+		}
+	}
+	assert(loopCheck, "Large test success.", szMsg);
+	assert(queueIsEmpty(&sQueue), "Queue where expected",
+			"queue still has elements");
 
 	queueTerminate(&sQueue);
 	assert(queueIsEmpty(&sQueue), "Queue terminate successful",

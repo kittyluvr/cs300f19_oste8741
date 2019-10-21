@@ -46,6 +46,7 @@ extern void queueTerminate (QueuePtr psQueue){
 
 extern void queueLoadErrorMessages (){
 	LOAD_Q_ERRORS
+	pqueueLoadErrorMessages();
 }
 // results:	Loads the error message strings for the error handler to use
 //					No error conditions
@@ -54,12 +55,18 @@ extern void queueLoadErrorMessages (){
 *									Checking number of elements in queue
 **************************************************************************/
 extern int queueSize (const QueuePtr psQueue){
+	if(psQueue == NULL){
+		processError("queueSize", ERROR_INVALID_Q);
+	}
 	return pqueueSize(&psQueue->sTheQueue);
 }
 // results: Returns the number of elements in the Q
 // 					error code priority: ERROR_INVALID_Q if Q is NULL
 
 extern bool queueIsEmpty (const QueuePtr psQueue){
+	if(psQueue == NULL){
+		processError("queueIsEmpty", ERROR_INVALID_Q);
+	}
 	return pqueueIsEmpty(&psQueue->sTheQueue);
 }
 // results: If Q is empty, return true; otherwise, return false
@@ -70,12 +77,35 @@ extern bool queueIsEmpty (const QueuePtr psQueue){
 /**************************************************************************
 *									Inserting and retrieving values
 **************************************************************************/
-extern void queueEnqueue (QueuePtr psQueue, const void *pBuffer, int size);
+extern void queueEnqueue (QueuePtr psQueue, const void *pBuffer, int size){
+	if(psQueue == NULL){
+		processError("queueEnqueue", ERROR_INVALID_Q);
+	}
+	if(pBuffer == NULL){
+		processError("queueEnqueue", ERROR_NULL_Q_PTR);
+	}
+	const int NO_PRIORITY = 0;
+	pqueueEnqueue(&psQueue->sTheQueue, pBuffer, size, NO_PRIORITY);
+	return;
+}
 // requires: psQueue is not full
 // results: Insert the element into the FIFO queue.
 //					error code priority: ERROR_INVALID_Q, ERROR_NULL_Q_PTR
 
-extern void *queueDequeue (QueuePtr psQueue, void *pBuffer, int size);
+extern void *queueDequeue (QueuePtr psQueue, void *pBuffer, int size){
+	if(psQueue == NULL){
+		processError("queueDequeue", ERROR_INVALID_Q);
+	}
+	if(pBuffer == NULL){
+		processError("queueDequeue", ERROR_NULL_Q_PTR);
+	}
+	if(queueIsEmpty(psQueue)){
+		processError("queueDequeue", ERROR_EMPTY_Q);
+	}
+	int trash;
+	pqueueDequeue(&psQueue->sTheQueue, pBuffer, size, &trash);
+	return pBuffer;
+}
 // requires: psQueue is not empty
 // results: Remove the element from the front of a non-empty queue
 //					error code priority: ERROR_INVALID_Q, ERROR_NULL_Q_PTR,
@@ -84,7 +114,20 @@ extern void *queueDequeue (QueuePtr psQueue, void *pBuffer, int size);
 /**************************************************************************
 *													Peek Operations
 **************************************************************************/
-extern void *queuePeek (QueuePtr psQueue, void *pBuffer, int size);
+extern void *queuePeek (QueuePtr psQueue, void *pBuffer, int size){
+	if(psQueue == NULL){
+		processError("queuePeek", ERROR_INVALID_Q);
+	}
+	if(pBuffer == NULL){
+		processError("queuePeek", ERROR_NULL_Q_PTR);
+	}
+	if(queueIsEmpty(psQueue)){
+		processError("queuePeek", ERROR_EMPTY_Q);
+	}
+	int trash;
+	pqueuePeek(&psQueue->sTheQueue, pBuffer, size, &trash);
+	return pBuffer;
+}
 // requires: psQueue is not empty
 // results: The value of the first element is returned through the
 //					argument list
