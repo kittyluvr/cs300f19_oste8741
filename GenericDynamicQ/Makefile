@@ -3,8 +3,8 @@
 # Author:     Frisk oster
 # Date:       9.17.19
 # Class:      CS 300
-# Assignment: GenericDynamicList
-# Purpose: 	  This is the Makefile for the GenericDynamicList    
+# Assignment: GenericDynamicQueue
+# Purpose: 	  This is the Makefile for the GenericDynamicQueue  
 #############################################################################
 
 CC=gcc
