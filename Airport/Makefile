@@ -58,7 +58,7 @@ testvalgrind: bin/airporttestdriver
 
 valgrind: bin/airportdriver
 	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \
-	--show-leak-kinds=all bin/airportdriver
+	--show-leak-kinds=all bin/airportdriver data/airport.txt
 
 tarball: clean
 	tar czf ../cs300_3_Oste8741.tar.gz ../GenericDynamicList \
