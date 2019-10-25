@@ -11,14 +11,25 @@
 #ifndef AIRPORT_H
 #define AIRPORT_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 #include "../../GenericDynamicQ/include/queue.h"
 
-enum airportErrors{ NULL_AIRPORT_POINTER, INVALID_DATA };
+#define MAX_ERROR_AP_CHARS 64
 
-enum RunwayStatus { U, E, T, L }; //U for unused
-typedef enum RunwayStatus RunwayStatus;
+enum airportErrors{ NULL_AIRPORT_PTR= 0, INVALID_PLANE_DATA };
+#define NUMBER_OF_AP_ERRORS INVALID PLANE_DATA - NULL_AIRPORT_PTR + 1
+
+//Errors
+#define LOAD_AP_ERRORS strcpy(gszAPErrors[NULL_AIRPORT_PTR], "Error: received null Airport pointer");\
+strcpy(gszAPErrors[INVALID_PLANE_DATA], "Error: Received invalid plane");
 
 //User Defined Types
+enum RunwayStatus { UNUSED, EMERGENCY, TAKEOFF, LANDING };
+typedef enum RunwayStatus RunwayStatus;
+
 typedef struct Plane{
 	int startTime;
 } Plane;
@@ -48,13 +59,13 @@ extern void airportTerminate(AirportPtr pAirport);
 extern void airportLoadErrorMessages();
 
 //Iterative steps
-extern void newTurnPrep(AirportPtr pAirport);
-extern void enqueueTakeoff(AirportPtr pAirport, const Plane newPlane);
-extern void enqueueLanding(AirportPtr pAirport, const Plane newPlane, const int fuel);
-extern void decrementFuel(AirportPtr pAirport);
-extern void emergencyLandings(AirportPtr pAirport);
-extern void useRunways(AirportPtr pAirport);
-extern void getTurnInfo(AirportPtr pAirport, RunwayStatus runways[], int *numTakeoff,
+extern void airportNewTurnPrep(AirportPtr pAirport);
+extern void airportEnqueueTakeoff(AirportPtr pAirport, Plane newPlane);
+extern void airportEnqueueLanding(AirportPtr pAirport, Plane newPlane, int fuel);
+extern void airportDecrementFuel(AirportPtr pAirport);
+extern void airportEmergencyLandings(AirportPtr pAirport);
+extern void airportUseRunways(AirportPtr pAirport);
+extern void airportGetTurnInfo(AirportPtr pAirport, RunwayStatus runways[], int *numTakeoff,
 		int *numLanding);
 
 #endif
