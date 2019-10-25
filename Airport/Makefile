@@ -33,14 +33,14 @@ bin/airporttestdriver: bin/airporttestdriver.o bin/airport.o \
 
 bin/airportdriver.o: src/airportdriver.c include/airport.h \
 ../GenericDynamicQ/include/queue.h ../GenericDynamicPriorityQ/include/pqueue.h
-	${CC} ${CFLAGS} -c bin/airportdriver.c -o bin/queuedriver.o
+	${CC} ${CFLAGS} -c src/airportdriver.c -o bin/airportdriver.o
 
 bin/airporttestdriver.o: src/airporttestdriver.c include/airport.h \
 ../GenericDynamicQ/include/queue.h ../GenericDynamicPriorityQ/include/pqueue.h
-	${CC} ${CFLAGS} -c bin/airporttestdriver.c -o bin/queuedriver.o
+	${CC} ${CFLAGS} -c src/airporttestdriver.c -o bin/airporttestdriver.o
 
-bin/airport.o: src/airport.c include/queue.h \
-../GenericDynamicQ/include/queue.h ../GenericDynamicPrioirtyQ/include/pqueue.h
+bin/airport.o: src/airport.c include/airport.h \
+../GenericDynamicQ/include/queue.h ../GenericDynamicPriorityQ/include/pqueue.h
 	${CC} ${CFLAGS} -c src/airport.c -o bin/airport.o
 
 ../GenericDynamicQ/bin/queue.o:
