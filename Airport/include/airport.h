@@ -19,14 +19,18 @@
 
 #define MAX_ERROR_AP_CHARS 64
 
-enum airportErrors{ NULL_AIRPORT_PTR= 0, INVALID_PLANE_DATA };
-#define NUMBER_OF_AP_ERRORS INVALID PLANE_DATA - NULL_AIRPORT_PTR + 1
+enum airportErrors{ NULL_AIRPORT_PTR= 0, EMPTY_PLANE_QUEUE, INVALID_DATA_PTR };
+#define NUMBER_OF_AP_ERRORS INVALID_DATA_PTR - NULL_AIRPORT_PTR + 1
 
 //Errors
-#define LOAD_AP_ERRORS strcpy(gszAPErrors[NULL_AIRPORT_PTR], "Error: received null Airport pointer");\
-strcpy(gszAPErrors[INVALID_PLANE_DATA], "Error: Received invalid plane");
+#define LOAD_AP_ERRORS strcpy(gszAPErrors[NULL_AIRPORT_PTR], \
+"Error: received null Airport pointer"); \
+strcpy(gszAPErrors[EMPTY_PLANE_QUEUE], "Error: no planes in the queue");\
+strcpy(gszAPErrors[INVALID_DATA_PTR], "Error: Received invalid data ptr");
 
 //User Defined Types
+#define NUM_RUNWAYS 3
+
 enum RunwayStatus { UNUSED, EMERGENCY, TAKEOFF, LANDING };
 typedef enum RunwayStatus RunwayStatus;
 
@@ -43,29 +47,32 @@ typedef struct Statistics{
 	int emergencyLandings = 0;
 	int crashes 					= 0;
 	int totalLandingFuel 	= 0;
+	int totalLandingWait 	= 0;
+	int totalTakeoffWait	= 0;
 } Statistics;
 
 typedef struct Airport *AirportPtr;
 typedef struct Airport{
 	Queue sTakeoffPlanes;
 	PriorityQueue sLandingPlanes;
-	RunwayStatus runways[3];
+	RunwayStatus runways[NUM_RUNWAYS];
 	Statistics sStats;
 } Airport;
 
 //Create Functions
-extern void airportCreate(AirportPtr pAirport);
-extern void airportTerminate(AirportPtr pAirport);
+extern void airportCreate(AirportPtr psAirport);
+extern void airportTerminate(AirportPtr psAirport);
 extern void airportLoadErrorMessages();
 
 //Iterative steps
-extern void airportNewTurnPrep(AirportPtr pAirport);
-extern void airportEnqueueTakeoff(AirportPtr pAirport, Plane newPlane);
-extern void airportEnqueueLanding(AirportPtr pAirport, Plane newPlane, int fuel);
-extern void airportDecrementFuel(AirportPtr pAirport);
-extern void airportEmergencyLandings(AirportPtr pAirport);
-extern void airportUseRunways(AirportPtr pAirport);
-extern void airportGetTurnInfo(AirportPtr pAirport, RunwayStatus runways[], int *numTakeoff,
-		int *numLanding);
+extern void airportNewTurnPrep(AirportPtr psAirport);
+extern void airportEnqueueTakeoff(AirportPtr psAirport, Plane newPlane);
+extern void airportEnqueueLanding(AirportPtr psAirport, Plane newPlane,
+		int fuel);
+extern void airportDecrementFuel(AirportPtr psAirport);
+extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum);
+extern void airportUseRunways(AirportPtr psAirport, int turnNum);
+extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
+		int *numTakeoff, int *numLanding);
 
 #endif
