@@ -41,14 +41,14 @@ typedef struct Plane{
 //and potential reusablity.
 
 typedef struct Statistics{
-	int totalPlanes 			= 0;
-	int takeoffs 					= 0;
-	int landings 					= 0;
-	int emergencyLandings = 0;
-	int crashes 					= 0;
-	int totalLandingFuel 	= 0;
-	int totalLandingWait 	= 0;
-	int totalTakeoffWait	= 0;
+	int totalPlanes;
+	int takeoffs;
+	int landings;
+	int emergencyLandings;
+	int crashes;
+	int totalLandingFuel;
+	int totalLandingWait;
+	int totalTakeoffWait;
 } Statistics;
 
 typedef struct Airport *AirportPtr;

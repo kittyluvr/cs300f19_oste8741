@@ -12,7 +12,7 @@ CFLAGS=-Wall -g
 
 .PHONY: all clean
 
-all: bin bin/airportdriver
+all: bin bin/airportdriver bin/airporttestdriver
 
 bin:
 	mkdir -p bin

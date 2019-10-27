@@ -37,9 +37,21 @@ extern void airportCreate(AirportPtr psAirport){
 	if(psAirport == NULL){
 		processError("airportCreate", NULL_AIRPORT_PTR);
 	}
+	//Prep queues
 	pqueueCreate(&psAirport->sLandingPlanes);
 	queueCreate(&psAirport->sTakeoffPlanes);
-	newTurnPrep(&psAirport);
+
+	//Clear stats
+	psAirport->sStats.totalPlanes 			= 0;
+	psAirport->sStats.takeoffs 					= 0;
+	psAirport->sStats.landings 					= 0;
+	psAirport->sStats.emergencyLandings = 0;
+	psAirport->sStats.crashes 					= 0;
+	psAirport->sStats.totalLandingFuel 	= 0;
+	psAirport->sStats.totalLandingWait 	= 0;
+	psAirport->sStats.totalTakeoffWait	= 0;
+
+	airportNewTurnPrep(psAirport);
 	return;
 }
 extern void airportTerminate(AirportPtr psAirport){
@@ -113,9 +125,9 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum){
 				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
 						&fuel);
 				psAirport->runways[i] = EMERGENCY;
-				psAirport->sStats->emergencyLandings++;
-				psAirport->sStats->landings++;
-				psAirport->sStats->totalLandingWait += turnNum - sLandingPlane.startTime;
+				psAirport->sStats.emergencyLandings++;
+				psAirport->sStats.landings++;
+				psAirport->sStats.totalLandingWait += turnNum - sLandingPlane.startTime;
 			}
 			//Otherwise, exit loop
 			else{
@@ -123,6 +135,29 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum){
 			}
 		}
 		//if there are no planes, exit loop
+		else{
+			bELandingsDone = true;
+		}
+	}
+
+	//Check for crashing planes
+	while(!bELandingsDone){
+		//Ensure planes still in queue. (If all planes have 0 fuel it's possible
+		//for this to be false.)
+		if(!pqueueIsEmpty(&psAirport->sLandingPlanes)){
+			//Check if remaining planes with no fuel.
+			pqueuePeek(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
+				&fuel);
+			//If so, crash
+			if(fuel == ELANDING_THRESHOLD){
+				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
+					&fuel);
+				psAirport->sStats.crashes++;
+			}
+			else{
+				bELandingsDone = true;
+			}
+		}
 		else{
 			bELandingsDone = true;
 		}
@@ -147,8 +182,8 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 				//Takeoff
 				psAirport->runways[i] = TAKEOFF;
 				queueDequeue(&psAirport->sTakeoffPlanes, &sPlane, sizeof(Plane));
-				psAirport->sStats->takeoffs++;
-				psAirport->sStats->totalTakeoffWait += turnNum - sPlane.startTime;
+				psAirport->sStats.takeoffs++;
+				psAirport->sStats.totalTakeoffWait += turnNum - sPlane.startTime;
 			}
 			else{
 				//Double check landing queue is not empty. (If it is than both queues are empty)
@@ -157,8 +192,8 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 					psAirport->runways[i] = LANDING;
 					pqueueDequeue(&psAirport->sLandingPlanes, &sPlane, sizeof(Plane),
 							&fuel);
-					psAirport->sStats->landings++;
-					psAirport->sStats->totalLandingWait += turnNum - sPlane.startTime;
+					psAirport->sStats.landings++;
+					psAirport->sStats.totalLandingWait += turnNum - sPlane.startTime;
 				}
 			}
 		}
