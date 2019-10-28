@@ -41,7 +41,6 @@ typedef struct Plane{
 //and potential reusablity.
 
 typedef struct Statistics{
-	int totalPlanes;
 	int takeoffs;
 	int landings;
 	int emergencyLandings;
@@ -70,9 +69,11 @@ extern void airportEnqueueTakeoff(AirportPtr psAirport, Plane newPlane);
 extern void airportEnqueueLanding(AirportPtr psAirport, Plane newPlane,
 		int fuel);
 extern void airportDecrementFuel(AirportPtr psAirport);
-extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum);
+extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
+		int *crashes);
 extern void airportUseRunways(AirportPtr psAirport, int turnNum);
 extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 		int *numTakeoff, int *numLanding);
+extern void airportGetFinalStats(AirportPtr psAirport, Statistics *psStats);
 
 #endif

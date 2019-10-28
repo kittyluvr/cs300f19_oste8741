@@ -70,10 +70,15 @@ int main(){
 	RunwayStatus runways[NUM_RUNWAYS];
 	int numTakeoff = 0;
 	int numLanding = 0;
+	int crashes = 0;
 
 	bool bAllExpected = true;
 	int i = 0;
+	int j = 0;
 	Plane sTempPlane;
+	Statistics sStats;
+
+	airportLoadErrorMessages();
 
 	airportCreate(&sAirport);
 
@@ -95,7 +100,6 @@ int main(){
 	}
 	airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
 	bAllExpected = true;
-	i = 0;
 	for(i = 0; i < NUM_RUNWAYS; i++){
 		if(runways[i] != UNUSED){
 			bAllExpected = false;
@@ -109,7 +113,6 @@ int main(){
 	airportUseRunways(&sAirport, TEST_LOOP_SIZE);
 	airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
 	bAllExpected = true;
-	i = 0;
 	for(i = 0; i < NUM_RUNWAYS; i++){
 		if(runways[i] != LANDING){
 			bAllExpected = false;
@@ -121,8 +124,8 @@ int main(){
 
 	//Prep for a new turn
 	airportNewTurnPrep(&sAirport);
+	airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
 	bAllExpected = true;
-	i = 0;
 	for(i = 0; i < NUM_RUNWAYS; i++){
 		if(runways[i] != UNUSED){
 			bAllExpected = false;
@@ -142,7 +145,6 @@ int main(){
 	airportUseRunways(&sAirport, TEST_LOOP_SIZE);
 	airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
 	bAllExpected = true;
-	i = 0;
 	for(i = 0; i < NUM_RUNWAYS; i++){
 		if(runways[i] != TAKEOFF){
 			bAllExpected = false;
@@ -152,5 +154,60 @@ int main(){
 	assert(numTakeoff == TEST_LOOP_SIZE - NUM_RUNWAYS && numLanding == TEST_LOOP_SIZE - NUM_RUNWAYS,
 		"Queues as expected", "Queues weird");
 
+	//Handle rest
+	j = 0;
+	do{
+		airportNewTurnPrep(&sAirport);
+		airportUseRunways(&sAirport, j);
+		airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
+		for(i = 0; i < NUM_RUNWAYS; i++){
+			//if even turn then should have landed 2 and took off 1
+			if(j % 2 == 0){
+				if(i % 2 == 0 && runways[i] != LANDING){
+					bAllExpected = false;
+				}
+				else if(i % 2 == 1 && runways[i] != TAKEOFF){
+					bAllExpected = false;
+				}
+			}
+			//Else should have took off
+			else{
+				if(i % 2 == 0 && runways[i] != TAKEOFF){
+					bAllExpected = false;
+				}
+				else if(i % 2 == 1 && runways[i] != LANDING){
+					bAllExpected = false;
+				}
+			}
+		}
+		j++;
+	}while(numTakeoff != 0 && numLanding!= 0 && bAllExpected);
+	assert(numTakeoff == 0, "Takeoffs successful", "Takeoffs remaining");
+	assert(numLanding == 0, "Landings successful", "Landings remaining");
+
+	//Test E-landings and crashes
+	sTempPlane.startTime = 0;
+	for(i = 0; i < TEST_LOOP_SIZE; i++){
+		airportEnqueueLanding(&sAirport, sTempPlane, 0);
+	}
+	airportEmergencyLandings(&sAirport, 0, &crashes);
+
+	//Check
+	airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
+	bAllExpected = true;
+	for(i = 0; i < NUM_RUNWAYS; i++){
+		if(runways[i] != EMERGENCY){
+			bAllExpected = false;
+		}
+	}
+	assert(bAllExpected, "Runways used for EMERGENCY", "weirdness with runways");
+	assert(crashes == TEST_LOOP_SIZE - NUM_RUNWAYS, "Crashes as expected", "crashes weird");
+
+	airportGetFinalStats(&sAirport, &sStats);
+	assert(sStats.crashes == TEST_LOOP_SIZE - NUM_RUNWAYS, "Crashes as expected", "Crashes weird");
+	assert(sStats.landings == 2 * TEST_LOOP_SIZE, "Landings as expected", "Landings weird");
+	assert(sStats.takeoffs == TEST_LOOP_SIZE, "Takeoffs as expected", "Takeoffs weird");
+
+	airportTerminate(&sAirport);
 	return EXIT_SUCCESS;
 }

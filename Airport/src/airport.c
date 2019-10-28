@@ -42,7 +42,6 @@ extern void airportCreate(AirportPtr psAirport){
 	queueCreate(&psAirport->sTakeoffPlanes);
 
 	//Clear stats
-	psAirport->sStats.totalPlanes 			= 0;
 	psAirport->sStats.takeoffs 					= 0;
 	psAirport->sStats.landings 					= 0;
 	psAirport->sStats.emergencyLandings = 0;
@@ -103,7 +102,8 @@ extern void airportDecrementFuel(AirportPtr psAirport){
 	return;
 }
 
-extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum){
+extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
+		int *crashes){
 	if(psAirport == NULL){
 		processError("airportEmergencyLandings", NULL_AIRPORT_PTR);
 	}
@@ -153,6 +153,8 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum){
 				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
 					&fuel);
 				psAirport->sStats.crashes++;
+				psAirport->sStats.landings++;
+				(*crashes)++;
 			}
 			else{
 				bELandingsDone = true;
@@ -217,5 +219,16 @@ extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 
 	*pNumTakeoff = queueSize(&psAirport->sTakeoffPlanes);
 	*pNumLanding = pqueueSize(&psAirport->sLandingPlanes);
+	return;
+}
+
+extern void airportGetFinalStats(AirportPtr psAirport, Statistics *psStats){
+	if(psAirport == NULL){
+		processError("airportGetFinalStats", NULL_AIRPORT_PTR);
+	}
+	if(psStats == NULL){
+		processError("airportGetFinalStats", INVALID_DATA_PTR);
+	}
+	memcpy(psStats, &psAirport->sStats,  sizeof(Statistics));
 	return;
 }
