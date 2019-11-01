@@ -19,7 +19,8 @@
 
 #define MAX_ERROR_AP_CHARS 64
 
-enum airportErrors{ NULL_AIRPORT_PTR= 0, EMPTY_PLANE_QUEUE, INVALID_DATA_PTR };
+enum airportErrors{ NULL_AIRPORT_PTR= 0, EMPTY_PLANE_QUEUE,
+	INVALID_DATA_PTR };
 #define NUMBER_OF_AP_ERRORS INVALID_DATA_PTR - NULL_AIRPORT_PTR + 1
 
 //Errors
@@ -38,7 +39,8 @@ typedef struct Plane{
 	int startTime;
 } Plane;
 //This struct isn't strictly necessary but it's included for both readability
-//and potential reusablity.
+//and potential reusablity, should a plane need to include more info in the
+//future
 
 typedef struct Statistics{
 	int takeoffs;
@@ -72,6 +74,8 @@ extern void airportDecrementFuel(AirportPtr psAirport);
 extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 		int *crashes);
 extern void airportUseRunways(AirportPtr psAirport, int turnNum);
+
+//Getters
 extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 		int *numTakeoff, int *numLanding);
 extern void airportGetFinalStats(AirportPtr psAirport, Statistics *psStats);

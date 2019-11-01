@@ -34,11 +34,11 @@ static void processError (const char *pszFunctionName, int errorCode){
 
 //Create Functions
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportCreate
 
- Description: create function for airport to make sure everything is set up
- 	 	 	 	 	 	 	correctly
+ Description: create function for airport to make sure everything is set
+ 	 	 	 	 	 	 	up correctly
 
  Parameters:	psAirport - pointer to Airport
 
@@ -65,8 +65,8 @@ extern void airportCreate(AirportPtr psAirport){
 	return;
 }
 
-/************************************************************************
- Function: 	 	airportTemrinate
+/*************************************************************************
+ Function: 	 	airportTerminate
 
  Description: Terminate function for airport to make sure everything is
  	 	 	 	 	 	 	removed correctly
@@ -84,17 +84,17 @@ extern void airportTerminate(AirportPtr psAirport){
 	return;
 }
 
-/**************************************************************************
+/*************************************************************************
  Function: 	 	airportLoadErrorMessages
 
- Description: Initializes the string of error messages. LOAD_AP_ERRORS is a
- 	 	 	 	 	 	  macro defined in the header file. Also calls function to load
- 	 	 	 	 	 	  queue errors
+ Description: Initializes the string of error messages. LOAD_AP_ERRORS is
+ 	 	 	 	 	 	  a macro defined in the header file. Also calls function to
+ 	 	 	 	 	 	  load queue errors
 
  Parameters:	None
 
  Returned:	 	None
- *************************************************************************/
+ ************************************************************************/
 extern void airportLoadErrorMessages(){
 	LOAD_AP_ERRORS
 	queueLoadErrorMessages();
@@ -102,7 +102,7 @@ extern void airportLoadErrorMessages(){
 
 //Iterative steps
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportNewTurnPrep
 
  Description: Preps airport at the start of each turn
@@ -122,7 +122,7 @@ extern void airportNewTurnPrep(AirportPtr psAirport){
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportEnqueueTakeoff
 
  Description: Enqueues a plane in the takeoff queue
@@ -140,7 +140,7 @@ extern void airportEnqueueTakeoff(AirportPtr psAirport, Plane newPlane){
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportEnqueueLanding
 
  Description: Enqueues a plane in the landing queue
@@ -159,7 +159,7 @@ extern void airportEnqueueLanding(AirportPtr psAirport, Plane newPlane,
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportDecrementFuel
 
  Description: Decrements the fuel of all planes in landing queue
@@ -179,7 +179,7 @@ extern void airportDecrementFuel(AirportPtr psAirport){
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportEmergencyLanding
 
  Description: Performs emergency landings and crashes
@@ -209,12 +209,13 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 					&fuel);
 			//If so, land
 			if(fuel == ELANDING_THRESHOLD){
-				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
-						&fuel);
+				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane,
+						sizeof(Plane), &fuel);
 				psAirport->runways[i] = EMERGENCY;
 				psAirport->sStats.emergencyLandings++;
 				psAirport->sStats.landings++;
-				psAirport->sStats.totalLandingWait += turnNum - sLandingPlane.startTime;
+				psAirport->sStats.totalLandingWait += turnNum -
+						sLandingPlane.startTime;
 			}
 			//Otherwise, exit loop
 			else{
@@ -237,11 +238,12 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 				&fuel);
 			//If so, crash
 			if(fuel == ELANDING_THRESHOLD){
-				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane, sizeof(Plane),
-					&fuel);
+				pqueueDequeue(&psAirport->sLandingPlanes, &sLandingPlane,
+						sizeof(Plane), &fuel);
 				psAirport->sStats.crashes++;
 				psAirport->sStats.landings++;
-				psAirport->sStats.totalLandingWait += turnNum - sLandingPlane.startTime;
+				psAirport->sStats.totalLandingWait += turnNum -
+						sLandingPlane.startTime;
 				(*crashes)++;
 			}
 			else{
@@ -255,8 +257,8 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 	return;
 }
 
-/************************************************************************
- Function: 	 	airportEmergencyLanding
+/*************************************************************************
+ Function: 	 	airportUseRunways
 
  Description: Performs landings and takeoffs on unused runways
 
@@ -287,7 +289,8 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 				psAirport->sStats.totalTakeoffWait += turnNum - sPlane.startTime;
 			}
 			else{
-				//Double check landing queue is not empty. (If it is than both queues are empty)
+				//Double check landing queue is not empty.
+				//(If it is then both queues are empty)
 				if(!pqueueIsEmpty(&psAirport->sLandingPlanes)){
 					//Land
 					psAirport->runways[i] = LANDING;
@@ -303,7 +306,9 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 	return;
 }
 
-/************************************************************************
+//Getters
+
+/*************************************************************************
  Function: 	 	airportGetTurnInfo
 
  Description: Gets info from the current turn so it can be output
@@ -337,7 +342,7 @@ extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	airportGetFinalStats
 
  Description: Gets stats struct

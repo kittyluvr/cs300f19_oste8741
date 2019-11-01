@@ -4,7 +4,7 @@
 void runSimulation(FILE* inFile);
 void printStats(AirportPtr psAirport);
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	main
 
  Description: main function. Checks inputs and opens file
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	runSimulation
 
  Description: runs simulation from file, outputs info to command line
@@ -130,7 +130,7 @@ void runSimulation(FILE* inFile){
 	return;
 }
 
-/************************************************************************
+/*************************************************************************
  Function: 	 	printStats
 
  Description: outputs end stats to screen
