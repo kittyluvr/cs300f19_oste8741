@@ -61,7 +61,7 @@ valgrind: bin/airportdriver
 	--show-leak-kinds=all bin/airportdriver data/airport.txt
 
 tarball: clean
-	tar czf ../cs300_3_Oste8741.tar.gz ../GenericDynamicList \
+	tar czf ../cs300_4_Oste8741.tar.gz ../GenericDynamicList \
 ../GenericDynamicPriorityQ ../GenericDynamicQ ../Airport
 
 clean:
