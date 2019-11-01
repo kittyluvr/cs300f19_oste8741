@@ -4,7 +4,17 @@
 void runSimulation(FILE* inFile);
 void printStats(AirportPtr psAirport);
 
+/************************************************************************
+ Function: 	 	main
 
+ Description: main function. Checks inputs and opens file
+
+ Parameters:	argc - number of commandline arguments
+ 	 	 	 	 	 	  argv - commandline args (expected 2,
+ 	 	 	 	 	 	  			 program name (i.e. airportdriver) and file name.)
+
+ Returned:	 	exit status
+ ************************************************************************/
 int main(int argc, char* argv[]){
 	airportLoadErrorMessages();
 	FILE* inFile = NULL;
@@ -27,6 +37,15 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
+/************************************************************************
+ Function: 	 	runSimulation
+
+ Description: runs simulation from file, outputs info to command line
+
+ Parameters:	inFile - file pointer to get data from
+
+ Returned:	 	None
+ ************************************************************************/
 void runSimulation(FILE* inFile){
 	int newLanding = 0;
 	int newTakeoff = 0;
@@ -111,6 +130,15 @@ void runSimulation(FILE* inFile){
 	return;
 }
 
+/************************************************************************
+ Function: 	 	printStats
+
+ Description: outputs end stats to screen
+
+ Parameters:	psAirport - airport pointer to get stats from
+
+ Returned:	 	None
+ ************************************************************************/
 void printStats(AirportPtr psAirport){
 	Statistics sStats;
 	double avgTakeoffWait;
@@ -132,4 +160,3 @@ void printStats(AirportPtr psAirport){
 
 	return;
 }
-
