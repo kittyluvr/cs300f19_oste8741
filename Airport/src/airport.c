@@ -196,6 +196,7 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 							&fuel);
 					psAirport->sStats.landings++;
 					psAirport->sStats.totalLandingWait += turnNum - sPlane.startTime;
+					psAirport->sStats.totalLandingFuel += fuel;
 				}
 			}
 		}
