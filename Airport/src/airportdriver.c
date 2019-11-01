@@ -82,7 +82,7 @@ void runSimulation(FILE* inFile){
 		//4. emergency landings
 		numCrashes = 0;
 		airportEmergencyLandings(&sAirport, turn, &numCrashes);
-		//5.
+		//5. use remaining runways
 		airportUseRunways(&sAirport, turn);
 		//6. print remaining results
 		airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
@@ -106,6 +106,7 @@ void runSimulation(FILE* inFile){
 	printf("\n");
 	printStats(&sAirport);
 }
+
 void printStats(AirportPtr psAirport){
 	Statistics sStats;
 	double avgTakeoffWait;
@@ -118,9 +119,9 @@ void printStats(AirportPtr psAirport){
 	avgLandingWait = ((double)(sStats.totalLandingWait))/sStats.landings;
 	avgFuel				 = ((double)(sStats.totalLandingFuel))/sStats.landings;
 
-	printf("Average takeoff waiting time: %f\n", avgTakeoffWait);
-	printf("Average landing waiting time: %.5f\n", avgLandingWait);
-	printf("Average flying time remaining on landing: %.5f\n", avgFuel);
+	printf("Average takeoff waiting time: %.5g\n", avgTakeoffWait);
+	printf("Average landing waiting time: %.5g\n", avgLandingWait);
+	printf("Average flying time remaining on landing: %.5g\n", avgFuel);
 	printf("Number of planes landing with zero fuel: %d\n",
 			sStats.emergencyLandings);
 	printf("Number of crashes: %d", sStats.crashes);
