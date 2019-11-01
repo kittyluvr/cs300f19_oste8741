@@ -12,7 +12,7 @@ CFLAGS=-Wall -g
 
 .PHONY: all clean
 
-all: bin bin/airportdriver bin/airporttestdriver
+all: bin bin/airportdriver
 
 bin:
 	mkdir -p bin
@@ -47,10 +47,10 @@ bin/airport.o: src/airport.c include/airport.h \
 	cd ../GenericDynamicQ; make bin/queue.o
 
 ../GenericDynamicPriorityQ/bin/pqueue.o:
-	cd ../GenericDynamicPrioirtyQ; make bin/pqueue.o
+	cd ../GenericDynamicPriorityQ; make bin/pqueue.o
 
 ../GenericDynamicList/bin/list.o:
-	cd ../GenericDynamicList; make bin/list
+	cd ../GenericDynamicList; make bin/list.o
 
 testvalgrind: bin/airporttestdriver
 	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \

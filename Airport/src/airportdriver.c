@@ -48,7 +48,7 @@ void runSimulation(FILE* inFile){
 	printf("---- | -------  ------------------------ | --- --- --- ----- |");
 	printf(" -------  -------\n");
 
-	for(turn = 0; !feof(inFile) || numLanding != 0 || numTakeoff != 0; turn++){
+	for(turn = 1; !feof(inFile) || numLanding != 0 || numTakeoff != 0; turn++){
 		printf("%4d | ", turn);
 		airportNewTurnPrep(&sAirport);
 		//1. Load from file
@@ -119,9 +119,9 @@ void printStats(AirportPtr psAirport){
 	avgLandingWait = ((double)(sStats.totalLandingWait))/sStats.landings;
 	avgFuel				 = ((double)(sStats.totalLandingFuel))/sStats.landings;
 
-	printf("Average takeoff waiting time: %.5g\n", avgTakeoffWait);
-	printf("Average landing waiting time: %.5g\n", avgLandingWait);
-	printf("Average flying time remaining on landing: %.5g\n", avgFuel);
+	printf("Average takeoff waiting time: %g\n", avgTakeoffWait);
+	printf("Average landing waiting time: %g\n", avgLandingWait);
+	printf("Average flying time remaining on landing: %g\n", avgFuel);
 	printf("Number of planes landing with zero fuel: %d\n",
 			sStats.emergencyLandings);
 	printf("Number of crashes: %d", sStats.crashes);

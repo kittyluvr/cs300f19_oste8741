@@ -154,6 +154,7 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 					&fuel);
 				psAirport->sStats.crashes++;
 				psAirport->sStats.landings++;
+				psAirport->sStats.totalLandingWait += turnNum - sLandingPlane.startTime;
 				(*crashes)++;
 			}
 			else{
