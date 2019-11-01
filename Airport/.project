@@ -3,6 +3,9 @@
 	<name>Airport</name>
 	<comment></comment>
 	<projects>
+		<project>GenericDynamicList</project>
+		<project>GenericDynamicPriorityQ</project>
+		<project>GenericDynamicQ</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

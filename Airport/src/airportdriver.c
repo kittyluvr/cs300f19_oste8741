@@ -25,10 +25,7 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-void runSimulation(AirportPtr psAirport, FILE* inFile){
-	const int LINE_WIDTH = 80;
-
-	char gszMessage[LINE_WIDTH];
+void runSimulation(FILE* inFile){
 	int newLanding = 0;
 	int newTakeoff = 0;
 	int numLanding = 0;
@@ -40,36 +37,75 @@ void runSimulation(AirportPtr psAirport, FILE* inFile){
 
 	Plane sTemp;
 	RunwayStatus runways[NUM_RUNWAYS];
+	Airport sAirport;
+	airportCreate(&sAirport);
 
-	for(turn = 0; inFile != EOF || numLanding != 0 || numTakeoff != 0; turn++){
+	//print table header
+	printf("     |           Planes Added            |      Runways      |");
+	printf("   Queue  Lengths\n");
+	printf("Time | Takeoff  Landing (Fuel Remaining) |  1   2   3  Crash |");
+	printf(" Takeoff  Landing\n");
+	printf("---- | -------  ------------------------ | --- --- --- ----- |");
+	printf(" _______  _______\n");
+
+	for(turn = 0; !feof(inFile) || numLanding != 0 || numTakeoff != 0; turn++){
+		printf("%4d | ", turn);
+		airportNewTurnPrep(&sAirport);
 		//1. Load from file
-		if(inFile != EOF){
-			fscanf(inFile, "%d %d", newTakeoff, newLanding);
+		if(!feof(inFile)){
+			fscanf(inFile, "%d %d", &newTakeoff, &newLanding);
 			sTemp.startTime = turn;
+			printf("%7d  %7d |", newTakeoff, newLanding);
 			//Enqueue takeoff
 			for(i = 0; i < newTakeoff; i++){
-				airportEnqueueTakeoff(psAirport, sTemp);
+				airportEnqueueTakeoff(&sAirport, sTemp);
 			}
 			//Enqueue landing
 			for(i = 0; i < newLanding; i++){
-				fscanf(inFile, "%d", inputFuel);
-				airportEnqueueLanding(psAirport, sTemp, inputFuel);
+				fscanf(inFile, "%d", &inputFuel);
+				printf("%5d", inputFuel);
+				airportEnqueueLanding(&sAirport, sTemp, inputFuel);
 			}
 			//If enqueue < MAX then iterate through remaining 0s in line of file
 			for(i = 0; i < NUM_RUNWAYS-newLanding; i++){
-				fscanf(inFile, "%d", inputFuel);
+				printf("    -");
+				fscanf(inFile, "%d", &inputFuel);
 			}
 		}
+		else{
+			printf("      0        0 |    -    -    -");
+		}
+		printf(" | ");
 		//Step 2 done above
 		//3. decrement fuel
-		airportDecrementFuel(psAirport);
+		airportDecrementFuel(&sAirport);
 		//4. emergency landings
-		airportEmergencyLandings(psAirport, turn, &numCrashes);
-		//Step 5 done above
+		numCrashes = 0;
+		airportEmergencyLandings(&sAirport, turn, &numCrashes);
+		//5.
+		airportUseRunways(&sAirport, turn);
 		//6. print remaining results
-		airportGetTurnInfo(psAirport, runways, &numTakeoff, &numLanding);
+		airportGetTurnInfo(&sAirport, runways, &numTakeoff, &numLanding);
+		for(i = 0; i < NUM_RUNWAYS; i++){
+			switch(runways[i]){
+				case UNUSED:
+					printf(" -  ");
+					break;
+				case EMERGENCY:
+					printf(" E  ");
+					break;
+				case LANDING:
+					printf(" L  ");
+					break;
+				case TAKEOFF:
+					printf(" T  ");
+			}
+		}
+		printf("%5d | %7d  %7d\n", numCrashes, numTakeoff, numLanding);
 	}
-	printStats(psAirport);
+	printStats(&sAirport);
 }
-void printStats(AirportPtr psAirport);
+void printStats(AirportPtr psAirport){
+	return;
+}
 
