@@ -14,7 +14,7 @@
 #include "../../GenericDynamicList/include/list.h"
 #include "../include/pqueue.h"
 
-char gszPQErrors[NUMBER_OF_LIST_ERRORS][MAX_ERROR_LIST_CHARS];
+char gszPQErrors[NUMBER_OF_PQ_ERRORS][MAX_ERROR_PQ_CHARS];
 
 /**************************************************************************
  Function: 	 	processError

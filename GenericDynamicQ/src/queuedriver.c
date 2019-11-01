@@ -8,7 +8,7 @@
  *************************************************************************/
 #include "../include/queue.h"
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	success
 
  Description: print a success message
@@ -16,12 +16,12 @@
  Parameters:	pszStr - the message to print
 
  Returned:	 	none
- ****************************************************************************/
+ *************************************************************************/
 static void success(char *pszStr) {
 	printf("SUCCESS: %s\n", pszStr);
 }
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	failure
 
  Description: print a failure message
@@ -29,12 +29,12 @@ static void success(char *pszStr) {
  Parameters:	pszStr - the message to print
 
  Returned:	 	none
- ****************************************************************************/
+ *************************************************************************/
 static void failure(char *pszStr) {
 	printf("FAILURE: %s\n", pszStr);
 }
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	assert
 
  Description: if the expression is true, assert success; otherwise, assert
@@ -45,7 +45,7 @@ static void failure(char *pszStr) {
  	 	 	 	 	 	 	pFalse			- String to print if failure
 
  Returned:	 	none
- ****************************************************************************/
+ *************************************************************************/
 static void assert(bool bExpression, char *pTrue, char *pFalse) {
 	if (bExpression) {
 		success(pTrue);
@@ -54,15 +54,15 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
 	}
 }
 
-/****************************************************************************
+/*************************************************************************
  Function: 	 	main
 
- Description: main function for pqueuedriver. tests pqueue ADT
+ Description: main function for queuedriver. tests queue ADT
 
- Parameters:
+ Parameters:	None
 
- Returned:	 	none
- ****************************************************************************/
+ Returned:	 	Exit status
+ ************************************************************************/
 int main(){
 	const int LOOP_SIZE  = 1000000;
 	const int LOOP_START = 0;
@@ -90,7 +90,8 @@ int main(){
 	for(i = 0; i < LOOP_SIZE; i++){
 		queueEnqueue(&sQueue, &i, sizeof(int));
 	}
-	assert(queueSize(&sQueue) == LOOP_SIZE, "Enqueued large test", "Enqueue error");
+	assert(queueSize(&sQueue) == LOOP_SIZE, "Enqueued large test",
+			"Enqueue error");
 	for(i = 0; loopCheck && i < LOOP_SIZE; i++){
 		queueDequeue(&sQueue, &buffer, sizeof(int));
 		if(buffer != i){
