@@ -86,7 +86,7 @@ extern void queueLoadErrorMessages (){
 *									Checking number of elements in queue
 **************************************************************************/
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	queueSize
 
  Description: Returns size of queue
@@ -94,7 +94,7 @@ extern void queueLoadErrorMessages (){
  Parameters:	psQueue - pointer to Queue
 
  Returned:	 	Size
- ****************************************************************************/
+ *************************************************************************/
 extern int queueSize (const QueuePtr psQueue){
 	if(psQueue == NULL){
 		processError("queueSize", ERROR_INVALID_Q);
@@ -104,7 +104,7 @@ extern int queueSize (const QueuePtr psQueue){
 // results: Returns the number of elements in the Q
 // 					error code priority: ERROR_INVALID_Q if Q is NULL
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	queueIsEmpty
 
  Description: Returns whether queue is empty
@@ -112,7 +112,7 @@ extern int queueSize (const QueuePtr psQueue){
  Parameters:	psQueue - pointer to Queue
 
  Returned:	 	Is queue empty
- ****************************************************************************/
+ *************************************************************************/
 extern bool queueIsEmpty (const QueuePtr psQueue){
 	if(psQueue == NULL){
 		processError("queueIsEmpty", ERROR_INVALID_Q);
@@ -126,7 +126,7 @@ extern bool queueIsEmpty (const QueuePtr psQueue){
 *									Inserting and retrieving values
 **************************************************************************/
 
-/****************************************************************************
+/**************************************************************************
  Function: 	 	queueEnqueue
 
  Description: Enqueues pbuffer in queue
@@ -136,7 +136,7 @@ extern bool queueIsEmpty (const QueuePtr psQueue){
  	 	 	 	 	 	 	size		- size of pbuffer
 
  Returned:	 	None
- ****************************************************************************/
+ *************************************************************************/
 extern void queueEnqueue (QueuePtr psQueue, const void *pBuffer, int size){
 	if(psQueue == NULL){
 		processError("queueEnqueue", ERROR_INVALID_Q);

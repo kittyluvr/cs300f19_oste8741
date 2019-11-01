@@ -96,7 +96,8 @@ int main(){
 		queueDequeue(&sQueue, &buffer, sizeof(int));
 		if(buffer != i){
 			loopCheck = false;
-			sprintf(szMsg,"Error in big test. Expected %d, received %d", i, buffer);
+			sprintf(szMsg,"Error in big test. Expected %d, received %d", i,
+					buffer);
 		}
 	}
 	assert(loopCheck, "Large test success.", szMsg);
