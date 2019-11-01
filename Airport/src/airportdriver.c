@@ -4,7 +4,9 @@
 void runSimulation(FILE* inFile);
 void printStats(AirportPtr psAirport);
 
+
 int main(int argc, char* argv[]){
+	airportLoadErrorMessages();
 	FILE* inFile = NULL;
 
 	//Check received enough for a file name.
@@ -105,6 +107,8 @@ void runSimulation(FILE* inFile){
 	}
 	printf("\n");
 	printStats(&sAirport);
+	airportTerminate(&sAirport);
+	return;
 }
 
 void printStats(AirportPtr psAirport){

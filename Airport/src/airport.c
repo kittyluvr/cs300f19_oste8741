@@ -33,6 +33,17 @@ static void processError (const char *pszFunctionName, int errorCode){
 }
 
 //Create Functions
+
+/************************************************************************
+ Function: 	 	airportCreate
+
+ Description: create function for airport to make sure everything is set up
+ 	 	 	 	 	 	 	correctly
+
+ Parameters:	psAirport - pointer to Airport
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportCreate(AirportPtr psAirport){
 	if(psAirport == NULL){
 		processError("airportCreate", NULL_AIRPORT_PTR);
@@ -53,6 +64,17 @@ extern void airportCreate(AirportPtr psAirport){
 	airportNewTurnPrep(psAirport);
 	return;
 }
+
+/************************************************************************
+ Function: 	 	airportTemrinate
+
+ Description: Terminate function for airport to make sure everything is
+ 	 	 	 	 	 	 	removed correctly
+
+ Parameters:	psAirport - pointer to Airport
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportTerminate(AirportPtr psAirport){
 	if(psAirport == NULL){
 		processError("airportTerminate", NULL_AIRPORT_PTR);
@@ -61,12 +83,34 @@ extern void airportTerminate(AirportPtr psAirport){
 	queueTerminate(&psAirport->sTakeoffPlanes);
 	return;
 }
+
+/**************************************************************************
+ Function: 	 	airportLoadErrorMessages
+
+ Description: Initializes the string of error messages. LOAD_AP_ERRORS is a
+ 	 	 	 	 	 	  macro defined in the header file. Also calls function to load
+ 	 	 	 	 	 	  queue errors
+
+ Parameters:	None
+
+ Returned:	 	None
+ *************************************************************************/
 extern void airportLoadErrorMessages(){
 	LOAD_AP_ERRORS
 	queueLoadErrorMessages();
 }
 
 //Iterative steps
+
+/************************************************************************
+ Function: 	 	airportNewTurnPrep
+
+ Description: Preps airport at the start of each turn
+
+ Parameters:	psAirport - pointer to Airport
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportNewTurnPrep(AirportPtr psAirport){
 	if(psAirport == NULL){
 		processError("airportNewTurnPrep", NULL_AIRPORT_PTR);
@@ -77,6 +121,17 @@ extern void airportNewTurnPrep(AirportPtr psAirport){
 	}
 	return;
 }
+
+/************************************************************************
+ Function: 	 	airportEnqueueTakeoff
+
+ Description: Enqueues a plane in the takeoff queue
+
+ Parameters:	psAirport - pointer to Airport
+ 	 	 	 	 	 	 	newPlane	- plane to enqueue
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportEnqueueTakeoff(AirportPtr psAirport, Plane newPlane){
 	if(psAirport == NULL){
 		processError("airportEnqueueTakeoff", NULL_AIRPORT_PTR);
@@ -84,13 +139,35 @@ extern void airportEnqueueTakeoff(AirportPtr psAirport, Plane newPlane){
 	queueEnqueue(&psAirport->sTakeoffPlanes, &newPlane, sizeof(Plane));
 	return;
 }
-extern void airportEnqueueLanding(AirportPtr psAirport, Plane newPlane, int fuel){
+
+/************************************************************************
+ Function: 	 	airportEnqueueLanding
+
+ Description: Enqueues a plane in the landing queue
+
+ Parameters:	psAirport - pointer to Airport
+ 	 	 	 	 	 	 	newPlane	- plane to enqueue
+
+ Returned:	 	None
+ ************************************************************************/
+extern void airportEnqueueLanding(AirportPtr psAirport, Plane newPlane,
+		int fuel){
 	if(psAirport == NULL){
 		processError("airportEnqueueLanding", NULL_AIRPORT_PTR);
 	}
 	pqueueEnqueue(&psAirport->sLandingPlanes, &newPlane, sizeof(Plane), fuel);
 	return;
 }
+
+/************************************************************************
+ Function: 	 	airportDecrementFuel
+
+ Description: Decrements the fuel of all planes in landing queue
+
+ Parameters:	psAirport - pointer to Airport
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportDecrementFuel(AirportPtr psAirport){
 	if(psAirport == NULL){
 		processError("airportDecrementFuel", NULL_AIRPORT_PTR);
@@ -102,6 +179,16 @@ extern void airportDecrementFuel(AirportPtr psAirport){
 	return;
 }
 
+/************************************************************************
+ Function: 	 	airportEmergencyLanding
+
+ Description: Performs emergency landings and crashes
+
+ Parameters:	psAirport - pointer to Airport
+ 	 	 	 	 	 	 	turnNum 	- current turn (for calculating wait time)
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 		int *crashes){
 	if(psAirport == NULL){
@@ -167,6 +254,17 @@ extern void airportEmergencyLandings(AirportPtr psAirport, int turnNum,
 	}
 	return;
 }
+
+/************************************************************************
+ Function: 	 	airportEmergencyLanding
+
+ Description: Performs landings and takeoffs on unused runways
+
+ Parameters:	psAirport - pointer to Airport
+ 	 	 	 	 	 	 	turnNum 	- current turn (for calculating wait time)
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 	if(psAirport == NULL){
 		processError("airportUseRunways", NULL_AIRPORT_PTR);
@@ -204,6 +302,21 @@ extern void airportUseRunways(AirportPtr psAirport, int turnNum){
 	}
 	return;
 }
+
+/************************************************************************
+ Function: 	 	airportGetTurnInfo
+
+ Description: Gets info from the current turn so it can be output
+
+ Parameters:	psAirport 	- pointer to Airport
+ 	 	 	 	 	 	 	runways 		- array of runways to copy runway status to
+ 	 	 	 	 	 	 	pNumTakeoff - place to put number currently in takeoff
+ 	 	 	 	 	 	 								queue
+ 	 	 	 	 	 	 	pNumLanding - place to put number currently in landing
+ 	 	 	 	 	 	 								queue
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 		int *pNumTakeoff, int *pNumLanding){
 	if(psAirport == NULL){
@@ -224,6 +337,16 @@ extern void airportGetTurnInfo(AirportPtr psAirport, RunwayStatus runways[],
 	return;
 }
 
+/************************************************************************
+ Function: 	 	airportGetFinalStats
+
+ Description: Gets stats struct
+
+ Parameters:	psAirport - pointer to Airport
+ 	 	 	 	 	 	 	psStats		- stats to copy into
+
+ Returned:	 	None
+ ************************************************************************/
 extern void airportGetFinalStats(AirportPtr psAirport, Statistics *psStats){
 	if(psAirport == NULL){
 		processError("airportGetFinalStats", NULL_AIRPORT_PTR);
