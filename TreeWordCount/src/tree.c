@@ -45,10 +45,6 @@ extern void trCreate (TreeNodePtr *hsTree){
 	if(hsTree == NULL){
 		processError("trCreate", TR_NO_CREATE_ERROR);
 	}
-	if(*hsTree !=){
-		(*hsTree)->psLeft  = NULL;
-		(*hsTree)->psRight = NULL;
-	}
 	return;
 }
 // results: If the tree can be created, then the tree exists and is empty;
@@ -86,8 +82,10 @@ extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 	if(*hsTree == NULL){
 		*hsTree = (TreeNodePtr)malloc(sizeof(TreeNode));
 		trCreate(hsTree);
-		(*hsTree)->count = value;
-		(*hsTree)->szWord = key;
+		(*hsTree)->psLeft  = NULL;
+		(*hsTree)->psRight = NULL;
+		(*hsTree)->count   = value;
+		(*hsTree)->szWord  = key;
 		return true;
 	}
 	//Else check if key is equal, greater than, or less than.
@@ -109,7 +107,20 @@ extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 //					error code priority: TR_NO_MEMORY_ERROR
 
 extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
-
+	if(psTree == NULL){
+		return false;
+	}
+	int cmpResult = strncmp(psTree->szWord, key, WORD_MAX);
+	if(cmpResult == 0){
+		psTree->count = value;
+		return true;
+	}
+	else if(cmpResult > 0){
+		return trUpdate(psTree->psLeft, key, value);
+	}
+	else{
+		return trUpdate(psTree->psRight, key, value);
+	}
 }
 // results: if the tree is valid, and the key does exist in the
 //					tree, update the node with the new value passed in and return
@@ -117,7 +128,24 @@ extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
 //					and do not alter the tree.
 //					error code priority: TR_NO_MEMORY_ERROR
 
-extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue);
+extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
+	if(pValue == NULL){
+		processError("trFind", TR_NO_BUFFER_ERROR);
+	}
+	if(psTree == NULL){
+		return false;
+	}
+	int cmpResult = strncmp(psTree->szWord, key, WORD_MAX);
+	if(cmpResult == 0){
+		return true;
+	}
+	else if(cmpResult > 0){
+		return trFind(psTree->psLeft, key, pValue);
+	}
+	else{
+		return trFind(psTree->psRight, key, pValue);
+	}
+}
 // results: if the tree is valid, and the key does exist in the
 //					tree, return the value through pValue and return true.
 //					The user must supply valid memory for pValue.
@@ -125,7 +153,14 @@ extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue);
 //				 	If the key does not exist in the tree, return false;
 //					error code priority: TR_NO_MEMORY_ERROR, TR_NO_BUFFER_ERROR
 
-extern void trPrintInOrder(const TreeNodePtr psTree);
+extern void trPrintInOrder(const TreeNodePtr psTree){
+	if(psTree != NULL){
+		trPrintInOrder(psTree->psLeft);
+		printf("%s %d", psTree->szWord, psTree->count);
+		trPrintInOrder(psTree->psRight);
+	}
+	return;
+}
 // results: if the tree is valid, print the key and value for each node
 //					in key order (ascending).
 //					error code priority: TR_NO_MEMORY_ERROR
