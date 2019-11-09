@@ -31,7 +31,7 @@ bin/tree.o: src/tree.c include/tree.h
 	
 valgrind: bin/wordCountDriver
 	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \
-	--show-leak-kinds=all bin/wordCountDriver
+	--show-leak-kinds=all bin/wordCountDriver data/words.txt
 
 tarball: clean
 	tar czf ../cs300_5_Oster8741.tar.gz ../TreeWordCount
