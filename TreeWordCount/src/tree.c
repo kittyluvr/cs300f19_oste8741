@@ -55,8 +55,11 @@ extern void trCreate (TreeNodePtr *hsTree){
 //					otherwise, TR_NO_CREATE_ERROR if psTree is NULL
 
 extern void trTerminate (TreeNodePtr *hsTree){
+	if(hsTree == NULL){
+		processError("trTerminate", TR_NO_TERMINATE_ERROR);
+	}
 	//if NULL then done
-	if(hsTree != NULL && *hsTree != NULL){
+	if(*hsTree != NULL){
 		//Clear children
 		trTerminate(&((*hsTree)->psLeft));
 		trTerminate(&((*hsTree)->psRight));
@@ -79,6 +82,9 @@ extern bool trIsEmpty (const TreeNodePtr psTree){
 extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 	if(hsTree == NULL){
 		processError("trInsert", TR_NO_MEMORY_ERROR);
+	}
+	if(key == NULL){
+		processError("trInsert", TR_NO_BUFFER_ERROR);
 	}
 
 	int cmpResult;
@@ -111,6 +117,9 @@ extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 //					error code priority: TR_NO_MEMORY_ERROR
 
 extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
+	if(key == NULL){
+		processError("trUpdate", TR_NO_BUFFER_ERROR);
+	}
 	if(psTree == NULL){
 		return false;
 	}
@@ -133,7 +142,7 @@ extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
 //					error code priority: TR_NO_MEMORY_ERROR
 
 extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
-	if(pValue == NULL){
+	if(pValue == NULL || key == NULL){
 		processError("trFind", TR_NO_BUFFER_ERROR);
 	}
 	if(psTree == NULL){
