@@ -8,6 +8,7 @@
  *************************************************************************/
 
 #include "../include/tree.h"
+#include <stdio.h>
 
 char gszTreeErrors[TR_NUMBER_OF_ERRORS][TR_MAX_ERROR_CHARS];
 
@@ -45,6 +46,9 @@ extern void trCreate (TreeNodePtr *hsTree){
 	if(hsTree == NULL){
 		processError("trCreate", TR_NO_CREATE_ERROR);
 	}
+	else{
+		*hsTree = NULL;
+	}
 	return;
 }
 // results: If the tree can be created, then the tree exists and is empty;
@@ -52,12 +56,13 @@ extern void trCreate (TreeNodePtr *hsTree){
 
 extern void trTerminate (TreeNodePtr *hsTree){
 	//if NULL then done
-	if(hsTree != NULL){
+	if(hsTree != NULL && *hsTree != NULL){
 		//Clear children
 		trTerminate(&((*hsTree)->psLeft));
-		trTerminate(&((*hsTree)->psLeft));
+		trTerminate(&((*hsTree)->psRight));
 		//Clear self (since now won't leak children)
 		free(*hsTree);
+		*hsTree = NULL;
 	}
 	return;
 }
@@ -81,11 +86,10 @@ extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 	//check if first element
 	if(*hsTree == NULL){
 		*hsTree = (TreeNodePtr)malloc(sizeof(TreeNode));
-		trCreate(hsTree);
 		(*hsTree)->psLeft  = NULL;
 		(*hsTree)->psRight = NULL;
 		(*hsTree)->count   = value;
-		(*hsTree)->szWord  = key;
+		strncpy((*hsTree)->szWord, key, WORD_MAX);
 		return true;
 	}
 	//Else check if key is equal, greater than, or less than.
@@ -135,8 +139,11 @@ extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
 	if(psTree == NULL){
 		return false;
 	}
-	int cmpResult = strncmp(psTree->szWord, key, WORD_MAX);
+	//Valgrind gives an error here but it's unclear why
+	int cmpResult = 0;
+	cmpResult = strncmp(psTree->szWord, key, WORD_MAX);
 	if(cmpResult == 0){
+		*pValue = psTree->count;
 		return true;
 	}
 	else if(cmpResult > 0){
@@ -156,7 +163,7 @@ extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
 extern void trPrintInOrder(const TreeNodePtr psTree){
 	if(psTree != NULL){
 		trPrintInOrder(psTree->psLeft);
-		printf("%s %d", psTree->szWord, psTree->count);
+		printf("%s %d \n", psTree->szWord, psTree->count);
 		trPrintInOrder(psTree->psRight);
 	}
 	return;

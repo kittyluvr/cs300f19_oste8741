@@ -8,26 +8,26 @@
 #############################################################################
 
 CC=gcc
-cFLAGS=Wall -g
+CFLAGS=-Wall -g
 
-.PHONY
+.PHONY: all clean
 
 all: bin bin/treedriver bin/wordCountDriver
 
 bin/treedriver: bin/treedriver.o bin/tree.o
-	${CC} ${CFLAGS} bin/treedriver.o bin/tree.o -o bin /treedriver
+	${CC} ${CFLAGS} bin/treedriver.o bin/tree.o -o bin/treedriver
 
 bin/treedriver.o: src/treedriver.c include/tree.h
 	${CC} ${CFLAGS} -c src/treedriver.c -o bin/treedriver.o
 
 bin/wordCountDriver: bin/wordCountDriver.o bin/tree.o
-	${CC} ${CFLAGS} bin/wordCountDriver.o bin/tree.o -o bin /wordCountDriver
+	${CC} ${CFLAGS} bin/wordCountDriver.o bin/tree.o -o bin/wordCountDriver
 
 bin/wordCountDriver.o: src/wordCountDriver.c include/tree.h
 	${CC} ${CFLAGS} -c src/wordCountDriver.c -o bin/wordCountDriver.o
 
 bin/tree.o: src/tree.c include/tree.h
-	${CC} ${CFLAGS} -c src/tree.c -o bin/list.o
+	${CC} ${CFLAGS} -c src/tree.c -o bin/tree.o
 	
 valgrind: bin/wordCountDriver
 	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \
