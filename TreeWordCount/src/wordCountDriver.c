@@ -51,4 +51,5 @@ static void fillAndPrint(FILE* inFile){
 		}
 	}
 	trPrintInOrder(psTree);
+	trTerminate(&psTree);
 }
