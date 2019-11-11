@@ -42,6 +42,15 @@ static void processError (const char *pszFunctionName, int errorCode){
 	exit (EXIT_FAILURE);
 }
 
+/**************************************************************************
+ Function: 	 	trCreate
+
+ Description: Checks that a tree is ready to be used.
+
+ Parameters:	hsTree - pointer to the tree
+
+ Returned:	 	None
+ *************************************************************************/
 extern void trCreate (TreeNodePtr *hsTree){
 	if(hsTree == NULL){
 		processError("trCreate", TR_NO_CREATE_ERROR);
@@ -54,6 +63,16 @@ extern void trCreate (TreeNodePtr *hsTree){
 // results: If the tree can be created, then the tree exists and is empty;
 //					otherwise, TR_NO_CREATE_ERROR if psTree is NULL
 
+/**************************************************************************
+ Function: 	 	trTerminate
+
+ Description: Emptys a tree by recursively calling itself on both subtrees
+ 	 	 	 	 	 	 	then deleting the root node.
+
+ Parameters:	hsTree - pointer to the tree
+
+ Returned:	 	None
+ *************************************************************************/
 extern void trTerminate (TreeNodePtr *hsTree){
 	if(hsTree == NULL){
 		processError("trTerminate", TR_NO_TERMINATE_ERROR);
@@ -72,13 +91,33 @@ extern void trTerminate (TreeNodePtr *hsTree){
 // results: If the tree can be terminated, then the tree no longer exists
 //				  and is empty; otherwise, TR_NO_TERMINATE_ERROR
 
+/**************************************************************************
+ Function: 	 	trIsEmpty
+
+ Description: Checks if a tree is empty
+
+ Parameters:	psTree - pointer to the tree
+
+ Returned:	 	Whether or not tree is empty
+ *************************************************************************/
 extern bool trIsEmpty (const TreeNodePtr psTree){
 	return psTree == NULL;
 }
 // results: If tree is empty, return true; otherwise, return false
 // 					error code priority: TR_NO_MEMORY_ERROR
 
+/**************************************************************************
+ Function: 	 	trInsert
 
+ Description: Inserts an element into the tree if it's not already there.
+
+ Parameters:	hsTree - pointer to the tree
+ 	 	 	 	 	 	 	key		 - the key of the element to insert
+ 	 	 	 	 	 	 	value	 - the data to insert in that element
+
+ Returned:	 	Whether the element could be inserted. (If false element
+ 	 	 	 	 	 	 	with that key already present.)
+ *************************************************************************/
 extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 	if(hsTree == NULL){
 		processError("trInsert", TR_NO_MEMORY_ERROR);
@@ -116,6 +155,18 @@ extern bool trInsert (TreeNodePtr *hsTree, const char* key, int value){
 //					do not alter the tree
 //					error code priority: TR_NO_MEMORY_ERROR
 
+/**************************************************************************
+ Function: 	 	trUpdate
+
+ Description: Updates an element in the tree
+
+ Parameters:	psTree - pointer to the tree
+ 	 	 	 	 	 	 	key		 - the key of the element to update
+ 	 	 	 	 	 	 	value	 - the data to put in that element
+
+ Returned:	 	Whether the element could be updated. (If false element
+ 	 	 	 	 	 	 	not found.)
+ *************************************************************************/
 extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
 	if(key == NULL){
 		processError("trUpdate", TR_NO_BUFFER_ERROR);
@@ -141,6 +192,17 @@ extern bool trUpdate (TreeNodePtr psTree, const char* key, int value){
 //					and do not alter the tree.
 //					error code priority: TR_NO_MEMORY_ERROR
 
+/**************************************************************************
+ Function: 	 	trFind
+
+ Description: Searches for an element in the tree
+
+ Parameters:	psTree - pointer to the tree
+ 	 	 	 	 	 	 	key		 - the key of the element to find
+ 	 	 	 	 	 	 	pValue - the buffer to fill with the data
+
+ Returned:	 	Whether the element could be found.
+ *************************************************************************/
 extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
 	if(pValue == NULL || key == NULL){
 		processError("trFind", TR_NO_BUFFER_ERROR);
@@ -169,6 +231,15 @@ extern bool trFind (const TreeNodePtr psTree, const char* key, int *pValue){
 //				 	If the key does not exist in the tree, return false;
 //					error code priority: TR_NO_MEMORY_ERROR, TR_NO_BUFFER_ERROR
 
+/**************************************************************************
+ Function: 	 	trPrintInOrder
+
+ Description: Prints the tree to the console in order
+
+ Parameters:	psTree - the tree
+
+ Returned:	 	None
+ *************************************************************************/
 extern void trPrintInOrder(const TreeNodePtr psTree){
 	if(psTree != NULL){
 		trPrintInOrder(psTree->psLeft);

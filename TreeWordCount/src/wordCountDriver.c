@@ -5,6 +5,16 @@
 
 static void fillAndPrint(FILE* inFile);
 
+/**************************************************************************
+ Function: 	 	main
+
+ Description: main function. checks input file.
+
+ Parameters:	argc - number of arguments
+ 	 	 	 	 	 	 	argv - arguments
+
+ Returned:	 	Exit status
+ *************************************************************************/
 int main(int argc, char* argv[]){
 	FILE* inFile = NULL;
 	if(argc != 2){
@@ -23,6 +33,15 @@ int main(int argc, char* argv[]){
 	return EXIT_SUCCESS;
 }
 
+/**************************************************************************
+ Function: 	 	fillAndPrint
+
+ Description: Fills tree from the file then prints to the screen.
+
+ Parameters:	inFile - file to get data from.
+
+ Returned:	 	None
+ *************************************************************************/
 static void fillAndPrint(FILE* inFile){
 	const int START = 1;
 	char szInput[WORD_MAX];
