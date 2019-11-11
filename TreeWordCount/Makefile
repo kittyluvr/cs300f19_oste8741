@@ -34,7 +34,7 @@ valgrind: bin/wordCountDriver
 	--show-leak-kinds=all bin/wordCountDriver data/words.txt
 
 tarball: clean
-	tar czf ../cs300_5_Oster8741.tar.gz ../TreeWordCount
+	tar czf ../cs300_5_Oste8741.tar.gz ../TreeWordCount
 
 clean:
 	rm -rf bin/*.o bin/treedriver bin/wordCountDriver

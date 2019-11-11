@@ -1,3 +1,12 @@
+/**************************************************************************
+ File name:		  wordCountDriver.c
+ Author:        Frisk Oster
+ Date:          11/04/19
+ Class:         CS300
+ Assignment:    treeWordCount
+ Purpose:       Driver for treewordcount. Reads in from file and outputs
+ 	 	 	 	 	 	 	  number of times each word appears
+ *************************************************************************/
 
 #include "../include/tree.h"
 #include <stdio.h>
