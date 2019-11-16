@@ -1,10 +1,10 @@
 #############################################################################
 # File name:  Makefile
 # Author:     Frisk oster
-# Date:       11.4.19
+# Date:       11.16.19
 # Class:      CS 300
-# Assignment: TreeWordCount
-# Purpose: 	  This is the Makefile for the TreewordCount    
+# Assignment: HashTable
+# Purpose: 	  This is the Makefile for the HashTable module  
 #############################################################################
 
 CC=gcc
