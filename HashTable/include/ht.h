@@ -31,7 +31,7 @@ typedef int (*hashFunc)(void*);
 //Hash function. Turns key into array index
 typedef int (*cmpKeys)(void*, void*);
 //Used for comparing keys
-typedef void (*printFunc)(void*);
+typedef void (*printFunc)(void*, void*);
 //Prints key and data since ht doesn't know their types
 
 //Hashtable struct
@@ -39,10 +39,10 @@ typedef struct HashTable *HashTablePtr;
 typedef struct HashTable{
 		ListPtr hashTable;
 		int tableSize;
-		keyCheck 	HT_VALIDATE;
-		hashFunc 	HT_HASH;
-		cmpKeys 	HT_COMP;
-		printFunc HT_PRINT;
+		keyCheck 	htValidate;
+		hashFunc 	htHash;
+		cmpKeys 	htComp;
+		printFunc htPrint;
 } HashTable;
 
 typedef struct htElement{
@@ -51,14 +51,14 @@ typedef struct htElement{
 }htElement;
 
 //Create Functions
-extern void htCreate(HashTablePtr psHT, int size, keyCheck VALIDATE,
-		hashFunc HASH, cmpKeys COMPARE, printFunc PRINT);
+extern void htCreate(HashTablePtr psHT, int size, keyCheck validate,
+		hashFunc hash, cmpKeys compare, printFunc print);
 extern void htTerminate(HashTablePtr psHT);
 extern void htLoadErrorMessages();
 
 //Hashtable check function
-extern bool htIsEmpty(psHT);
-extern bool htIsFull(psHT);
+extern bool htIsEmpty(HashTablePtr psHT);
+extern bool htIsFull(HashTablePtr psHT);
 
 //Data Management Functions
 extern bool htInsert(HashTablePtr psHT, void* key, void* pData);
@@ -68,3 +68,5 @@ extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer);
 
 //Print
 extern void htPrint(HashTablePtr psHT);
+
+#endif

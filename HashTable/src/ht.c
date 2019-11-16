@@ -28,20 +28,34 @@ static void processError (const char *pszFunctionName, int errorCode){
 }
 
 //Create Functions
-extern void htCreate(HashTablePtr psHT, int size, keyCheck VALIDATE,
-		hashFunc HASH, cmpKeys COMPARE, printFunc PRINT){
+
+/**************************************************************************
+ Function: 	 	htCreate
+
+ Description: Creates hashtable. Initializes all the member data/functions.
+
+ 	 	 	 	 	 	 	The parameters to the validate function are
+
+ Parameters:	psHT - hashtable to initialize
+ 	 	 	 	 	 	 	size - size of HashTable
+ 	 	 	 	 	 	 	VALIDATE -
+
+ Returned:	 	None
+ *************************************************************************/
+extern void htCreate(HashTablePtr psHT, int size, keyCheck validate,
+		hashFunc hash, cmpKeys compare, printFunc print){
 	if(psHT == NULL){
 		processError("htCreate", NULL_HT_PTR);
 	}
-	if(VALIDATE == NULL || HASH == NULL || COMPARE == NULL || PRINT == NULL){
+	if(validate == NULL || hash == NULL || compare == NULL || print == NULL){
 		processError("htCreate", HT_INVALID_CREATE_FUNC);
 	}
-	psHT->hashTable 	= (ListPtr)malloc(sizeof(List)*size);
-	psHT->tableSize 	= size;
-	psHT->HT_VALIDATE = VALIDATE;
-	psHT->HT_HASH			= HASH;
-	psHT->HT_COMP		 	= COMPARE;
-	psHT->HT_PRINT 		= PRINT;
+	psHT->hashTable  = (ListPtr)malloc(sizeof(List)*size);
+	psHT->tableSize  = size;
+	psHT->htValidate = validate;
+	psHT->htHash		 = hash;
+	psHT->htComp		 = compare;
+	psHT->htPrint		 = print;
 	return;
 }
 
@@ -51,7 +65,7 @@ extern void htTerminate(HashTablePtr psHT){
 	}
 	int i = 0;
 	for(i = 0; i < psHT->tableSize; i++){
-		lstTerminate(psHT->hashTable[i]);
+		lstTerminate(&(psHT->hashTable[i]));
 	}
 	free(psHT->hashTable);
 	return;
@@ -63,8 +77,23 @@ extern void htLoadErrorMessages(){
 }
 
 //Hashtable check function
-extern bool htIsEmpty(psHT);
-extern bool htIsFull(psHT);
+extern bool htIsEmpty(HashTablePtr psHT){
+	bool bEmpty = true;
+	int i = 0;
+	for(i = 0; bEmpty && i < psHT->tableSize; i++){
+		bEmpty = lstIsEmpty(&(psHT->hashTable[i]));
+	}
+	return bEmpty;
+}
+
+extern bool htIsFull(HashTablePtr psHT){
+	bool bFull = true;
+	int i = 0;
+	for(i = 0; bFull && i < psHT->tableSize; i++){
+		bFull = lstIsEmpty(&(psHT->hashTable[i]));
+	}
+	return bFull;
+}
 
 //Data Management Functions
 extern bool htInsert(HashTablePtr psHT, void* key, void* pData);
