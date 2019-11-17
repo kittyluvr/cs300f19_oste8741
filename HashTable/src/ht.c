@@ -91,7 +91,14 @@ extern void htTerminate(HashTablePtr psHT){
 		processError("htTerminate", NULL_HT_PTR);
 	}
 	int i = 0;
+	htElement sEntry;
 	for(i = 0; i < psHT->tableSize; i++){
+		while(!lstIsEmpty(&(psHT->hashTable[i]))){
+			lstFirst(&(psHT->hashTable[i]));
+			lstDeleteCurrent(&(psHT->hashTable[i]), &sEntry, sizeof(htElement));
+			free(sEntry.key);
+			free(sEntry.data);
+		}
 		lstTerminate(&(psHT->hashTable[i]));
 	}
 	free(psHT->hashTable);
@@ -105,6 +112,9 @@ extern void htLoadErrorMessages(){
 
 //Hashtable check function
 extern bool htIsEmpty(HashTablePtr psHT){
+	if(psHT == NULL){
+		processError("htIsEmpty", NULL_HT_PTR);
+	}
 	bool bEmpty = true;
 	int i = 0;
 	for(i = 0; bEmpty && i < psHT->tableSize; i++){
@@ -114,6 +124,9 @@ extern bool htIsEmpty(HashTablePtr psHT){
 }
 
 extern bool htIsFull(HashTablePtr psHT){
+	if(psHT == NULL){
+		processError("htIsEmpty", NULL_HT_PTR);
+	}
 	bool bFull = true;
 	int i = 0;
 	for(i = 0; bFull && i < psHT->tableSize; i++){
@@ -167,6 +180,10 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 			lstInsertAfter(&(psHT->hashTable[hash]), &sNewEntry, sizeof(htElement));
 		}
 	}
+	free(sNewEntry.key);
+	free(sNewEntry.data);
+	free(sOldEntry.key);
+	free(sOldEntry.data);
 	return true;
 }
 extern bool htDelete(HashTablePtr psHT, void* key);
@@ -192,5 +209,7 @@ extern void htPrint(HashTablePtr psHT){
 		}
 		printf("\n");
 	}
+	free(sEntry.key);
+	free(sEntry.data);
 	return;
 }
