@@ -10,6 +10,7 @@
 #include "../include/ht.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 bool intValidate(void*);
 int intHash(void*);
@@ -66,10 +67,21 @@ int main(){
 	const int SIZE = 11;
 	HashTable HT;
 
+	int i = 0;
+	bool bSuccess = true;
+
 	htLoadErrorMessages();
 
-	htCreate(&HT, SIZE, &intValidate, &intHash, &intComp, &intPrint);
+	htCreate(&HT, SIZE, sizeof(int), sizeof(int), &intValidate, &intHash, &intComp, &intPrint);
 	assert(htIsEmpty(&HT), "ht created as expected", "ht create weird");
+	htPrint(&HT);
+	for(i = 0; bSuccess && i < 20; i++){
+		bSuccess = htInsert(&HT, &i, &i);
+	}
+	assert(bSuccess, "Everything inserted correctly",
+			"insert for loop exited early");
+	assert(!htIsEmpty(&HT), "ht has items", "ht didn't insert");
+	htPrint(&HT);
 	htTerminate(&HT);
 
 	return EXIT_SUCCESS;
@@ -100,6 +112,6 @@ int intComp(void* pKey1, void* pKey2){
 	}
 }
 void intPrint(void* pKey, void* pData){
-	printf("%d %d, ", (int*)pKey, (int*)pData);
+	printf("%d %d, ", *(int*)pKey, *(int*)pData);
 	return;
 }

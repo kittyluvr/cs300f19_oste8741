@@ -28,7 +28,7 @@ bin/ht.o: src/ht.c include/ht.h ../GenericDynamicList/include/list.h
 ../GenericDynamicList/bin/list.o:
 	cd ../GenericDynamicList; make bin/list.o
 	
-valgrind: bin/queuedriver
+valgrind: bin/htdriver
 	valgrind -v --leak-check=yes --track-origins=yes --leak-check=full \
 	--show-leak-kinds=all bin/htdriver
 

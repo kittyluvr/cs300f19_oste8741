@@ -39,6 +39,8 @@ typedef struct HashTable *HashTablePtr;
 typedef struct HashTable{
 		ListPtr hashTable;
 		int tableSize;
+		int keySize;
+		int dataSize;
 		keyCheck 	htValidate;
 		hashFunc 	htHash;
 		cmpKeys 	htComp;
@@ -51,7 +53,8 @@ typedef struct htElement{
 }htElement;
 
 //Create Functions
-extern void htCreate(HashTablePtr psHT, int size, keyCheck validate,
+extern void htCreate(HashTablePtr psHT, int size, int keySize,
+		int dataSize, keyCheck validate,
 		hashFunc hash, cmpKeys compare, printFunc print);
 extern void htTerminate(HashTablePtr psHT);
 extern void htLoadErrorMessages();
