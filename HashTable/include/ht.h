@@ -41,6 +41,8 @@ typedef struct HashTable{
 		int tableSize;
 		int keySize;
 		int dataSize;
+		//Saving these in the hashtable does limit the versatility of the hash but
+		//it makes it easier to use without having to pass this in every function.
 		keyCheck 	htValidate;
 		hashFunc 	htHash;
 		cmpKeys 	htComp;

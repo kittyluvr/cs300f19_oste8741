@@ -145,6 +145,7 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 		processError("htInsert", HT_INVALID_KEY);
 	}
 
+	bool bDone = false;
 	htElement sNewEntry;
 	sNewEntry.key = malloc(psHT->keySize);
 	sNewEntry.data = malloc(psHT->dataSize);
@@ -163,27 +164,34 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	else{
 		//Go to where key would go
 		lstFirst(&(psHT->hashTable[hash]));
-		lstPeek(&(psHT->hashTable[hash]), &sOldEntry, sizeof(htElement));
-		comp = psHT->htComp(key, sOldEntry.key);
-		while(comp < 0){
-			lstPeekNext(&(psHT->hashTable[hash]), &sOldEntry, sizeof(htElement));
+		while(!bDone){
+			lstPeek(&(psHT->hashTable[hash]), &sOldEntry, sizeof(htElement));
 			comp = psHT->htComp(key, sOldEntry.key);
-			if(comp < 0){
-				lstNext(&(psHT->hashTable[hash]));
+			//Check if key already there (i.e. comp is 0) if so can't insert.
+			if(comp == 0){
+				free(sNewEntry.key);
+				free(sNewEntry.data);
+				bDone = true;
+			}
+			else if(comp < 0){
+				//Key is less than the tree element, insert before
+				lstInsertBefore(&(psHT->hashTable[hash]), &sNewEntry,
+						sizeof(htElement));
+				bDone = true;
+			}
+			else{
+				//Key is greater. If able to, walk, else, insert
+				if(lstHasNext(&(psHT->hashTable[hash]))){
+					lstNext(&(psHT->hashTable[hash]));
+				}
+				else{
+					lstInsertAfter(&(psHT->hashTable[hash]), &sNewEntry,
+							sizeof(htElement));
+					bDone = true;
+				}
 			}
 		}
-		//Check if key already there (i.e. comp is 0) if so can't insert.
-		if(comp == 0){
-			return false;
-		}
-		else{
-			lstInsertAfter(&(psHT->hashTable[hash]), &sNewEntry, sizeof(htElement));
-		}
 	}
-	free(sNewEntry.key);
-	free(sNewEntry.data);
-	free(sOldEntry.key);
-	free(sOldEntry.data);
 	return true;
 }
 extern bool htDelete(HashTablePtr psHT, void* key);
@@ -200,8 +208,8 @@ extern void htPrint(HashTablePtr psHT){
 	for(i = 0; i < psHT->tableSize; i++){
 		printf("Table entry %d size %d: ", i, lstSize(&(psHT->hashTable[i])));
 		if(!lstIsEmpty(&(psHT->hashTable[i]))){
+			lstFirst(&(psHT->hashTable[i]));
 			for(j = 0; j < lstSize(&(psHT->hashTable[i])); j++){
-				lstFirst(&(psHT->hashTable[i]));
 				lstPeek(&(psHT->hashTable[i]), &sEntry, sizeof(htElement));
 				psHT->htPrint(sEntry.key, sEntry.data);
 				lstNext(&(psHT->hashTable[i]));

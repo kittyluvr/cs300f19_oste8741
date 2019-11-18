@@ -75,13 +75,13 @@ int main(){
 	htCreate(&HT, SIZE, sizeof(int), sizeof(int), &intValidate, &intHash, &intComp, &intPrint);
 	assert(htIsEmpty(&HT), "ht created as expected", "ht create weird");
 	htPrint(&HT);
-	//for(i = 0; bSuccess && i < 20; i++){
-	//	bSuccess = htInsert(&HT, &i, &i);
-	//}
-	//assert(bSuccess, "Everything inserted correctly",
-	//		"insert for loop exited early");
-	//assert(!htIsEmpty(&HT), "ht has items", "ht didn't insert");
-	//htPrint(&HT);
+	for(i = 0; bSuccess && i < 20; i++){
+		bSuccess = htInsert(&HT, &i, &i);
+	}
+	assert(bSuccess, "Everything appears to have inserted correctly",
+			"insert for loop exited early");
+	assert(!htIsEmpty(&HT), "ht has items", "ht didn't insert");
+	htPrint(&HT);
 	htTerminate(&HT);
 
 	return EXIT_SUCCESS;
@@ -92,7 +92,7 @@ bool intValidate(void* pKey){
 }
 
 int intHash(void* pKey){
-	const uint32_t MASK = 0x0003C000;
+	const uint32_t MASK = 0x000FF000;
 	uint32_t keySquare = (*((int*)pKey))*(*((int*)pKey));
 	uint32_t hash = MASK & keySquare;
 	hash = hash>>14;
