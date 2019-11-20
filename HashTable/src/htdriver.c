@@ -82,6 +82,9 @@ int main(){
 			"insert for loop exited early");
 	assert(!htIsEmpty(&HT), "ht has items", "ht didn't insert");
 	htPrint(&HT);
+	i = 0;
+	htDelete(&HT, &i);
+	htPrint(&HT);
 	htTerminate(&HT);
 
 	return EXIT_SUCCESS;
@@ -92,9 +95,9 @@ bool intValidate(void* pKey){
 }
 
 int intHash(void* pKey){
-	const uint32_t MASK = 0x000FF000;
-	uint32_t keySquare = (*((int*)pKey))*(*((int*)pKey));
-	uint32_t hash = MASK & keySquare;
+	const uint64_t MASK = 0x0000000FF0000000;
+	uint64_t keySquare = (*((int*)pKey))*(*((int*)pKey));
+	uint64_t hash = MASK & keySquare;
 	hash = hash>>14;
 	return hash;
 }

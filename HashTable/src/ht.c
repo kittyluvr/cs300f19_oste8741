@@ -140,7 +140,9 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	if(psHT == NULL){
 		processError("htInsert", NULL_HT_PTR);
 	}
-	if(pData == NULL)
+	if(pData == NULL){
+		processError("htInsert", HT_INVALID_DATA_PTR);
+	}
 	if(!psHT->htValidate(key)){
 		processError("htInsert", HT_INVALID_KEY);
 	}
@@ -152,8 +154,6 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	memcpy(sNewEntry.key, key, psHT->keySize);
 	memcpy(sNewEntry.data, pData, psHT->dataSize);
 	htElement sOldEntry;
-	sOldEntry.key = malloc(psHT->keySize);
-	sOldEntry.data = malloc(psHT->dataSize);
 
 	int hash = psHT->htHash(key) % psHT->tableSize;
 	int comp = 0;
@@ -171,7 +171,7 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 			if(comp == 0){
 				free(sNewEntry.key);
 				free(sNewEntry.data);
-				bDone = true;
+				return false;
 			}
 			else if(comp < 0){
 				//Key is less than the tree element, insert before
@@ -194,17 +194,65 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	}
 	return true;
 }
-extern bool htDelete(HashTablePtr psHT, void* key);
+extern bool htDelete(HashTablePtr psHT, void* key){
+	if(psHT == NULL){
+		processError("htDelete", NULL_HT_PTR);
+	}
+	if(!psHT->htValidate(key)){
+		processError("htDelete", HT_INVALID_KEY);
+	}
+
+	bool bFound = false;
+	htElement sEntry;
+	int hash = psHT->htHash(key) % psHT->tableSize;
+	int comp = 0;
+
+	//If list is empty then not here to delete.
+	if(lstIsEmpty(&(psHT->hashTable[hash]))){
+		return bFound;
+	}
+	else{
+		lstFirst(&(psHT->hashTable[hash]));
+		while(!bFound){
+			lstPeek(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
+			comp = psHT->htComp(key, sEntry.key);
+			//If found, delete
+			if(comp == 0){
+				lstDeleteCurrent(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
+				free(sEntry.key);
+				free(sEntry.data);
+				bFound = true;
+				return bFound;
+			}
+			//Else, if key is less than the key in the table, element is not present
+			else if(comp < 0){
+				bFound = false;
+				return bFound;
+			}
+			//Else, if can go to next element, else not present
+			else{
+				if(lstHasNext(&(psHT->hashTable[hash]))){
+					lstNext(&(psHT->hashTable[hash]));
+				}
+				else{
+					bFound = false;
+					return bFound;
+				}
+			}
+		}
+	}
+}
 extern bool htUpdate(HashTablePtr psHT, void* key, void* pData);
 extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer);
 
 //Print
 extern void htPrint(HashTablePtr psHT){
+	if(psHT == NULL){
+		processError("htPrint", NULL_HT_PTR);
+	}
 	int i = 0;
 	int j = 0;
 	htElement sEntry;
-	sEntry.key = malloc(psHT->keySize);
-	sEntry.data = malloc(psHT->dataSize);
 	for(i = 0; i < psHT->tableSize; i++){
 		printf("Table entry %d size %d: ", i, lstSize(&(psHT->hashTable[i])));
 		if(!lstIsEmpty(&(psHT->hashTable[i]))){
@@ -217,7 +265,5 @@ extern void htPrint(HashTablePtr psHT){
 		}
 		printf("\n");
 	}
-	free(sEntry.key);
-	free(sEntry.data);
 	return;
 }
