@@ -199,18 +199,18 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 		processError("htDelete", HT_INVALID_KEY);
 	}
 
-	bool bFound = false;
 	htElement sEntry;
 	int hash = psHT->htHash(key) % psHT->tableSize;
 	int comp = 0;
 
 	//If list is empty then not here to delete.
 	if(lstIsEmpty(&(psHT->hashTable[hash]))){
-		return bFound;
+		return false;
 	}
 	else{
 		lstFirst(&(psHT->hashTable[hash]));
-		while(!bFound){
+		//This is while true because it exits via return statements.
+		while(true){
 			lstPeek(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
 			comp = psHT->htComp(key, sEntry.key);
 			//If found, delete
@@ -218,13 +218,11 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 				lstDeleteCurrent(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
 				free(sEntry.key);
 				free(sEntry.data);
-				bFound = true;
-				return bFound;
+				return true;
 			}
 			//Else, if key is less than the key in the table, element is not present
 			else if(comp < 0){
-				bFound = false;
-				return bFound;
+				return true;
 			}
 			//Else, if can go to next element, else not present
 			else{
@@ -232,8 +230,7 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 					lstNext(&(psHT->hashTable[hash]));
 				}
 				else{
-					bFound = false;
-					return bFound;
+					return true;
 				}
 			}
 		}
@@ -241,10 +238,101 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 }
 
 extern bool htUpdate(HashTablePtr psHT, void* key, void* pData){
+	if(psHT == NULL){
+		processError("htUpdate", NULL_HT_PTR);
+	}
+	if(pData == NULL){
+		processError("htUpdate", HT_INVALID_DATA_PTR);
+	}
+	if(!psHT->htValidate(key)){
+		processError("htUpdate", HT_INVALID_KEY);
+	}
 
+	htElement sEntry;
+	int hash = psHT->htHash(key) % psHT->tableSize;
+	int comp = 0;
+
+	//If list is bucket is empty can't update.
+	if(lstIsEmpty(&(psHT->hashTable[hash]))){
+		return false;
+	}
+	else{
+		lstFirst(&(psHT->hashTable[hash]));
+		//This is while true because it exits via return statements.
+		while(true){
+			lstPeek(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
+			comp = psHT->htComp(key, sEntry.key);
+			//If found, update
+			if(comp == 0){
+				free(sEntry.data);
+				sEntry.data = malloc(psHT->dataSize);
+				memcpy(sEntry.data, pData, psHT->dataSize);
+				lstUpdateCurrent(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
+				return true;
+			}
+			//Else, if key is less than the key in the table, element is not present
+			else if(comp < 0){
+				return true;
+			}
+			//Else, if can go to next element, else not present
+			else{
+				if(lstHasNext(&(psHT->hashTable[hash]))){
+					lstNext(&(psHT->hashTable[hash]));
+				}
+				else{
+					return true;
+				}
+			}
+		}
+	}
 }
 
-extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer);
+extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer){
+	if(psHT == NULL){
+		processError("htGet", NULL_HT_PTR);
+	}
+	if(pBuffer == NULL){
+		processError("htGet", HT_INVALID_DATA_PTR);
+	}
+	if(!psHT->htValidate(key)){
+		processError("htGet", HT_INVALID_KEY);
+	}
+
+	htElement sEntry;
+	int hash = psHT->htHash(key) % psHT->tableSize;
+	int comp = 0;
+
+	//If list is bucket is empty can't get.
+		if(lstIsEmpty(&(psHT->hashTable[hash]))){
+			return false;
+		}
+		else{
+			lstFirst(&(psHT->hashTable[hash]));
+			//This is while true because it exits via return statements.
+			while(true){
+				lstPeek(&(psHT->hashTable[hash]), &sEntry, sizeof(htElement));
+				comp = psHT->htComp(key, sEntry.key);
+				//If found, get
+				if(comp == 0){
+					memcpy(pBuffer, sEntry.data, psHT->dataSize);
+					return true;
+				}
+				//Else, if key is less than the key in the table, element is not present
+				else if(comp < 0){
+					return true;
+				}
+				//Else, if can go to next element, else not present
+				else{
+					if(lstHasNext(&(psHT->hashTable[hash]))){
+						lstNext(&(psHT->hashTable[hash]));
+					}
+					else{
+						return true;
+					}
+				}
+			}
+		}
+}
 
 //Print
 extern void htPrint(HashTablePtr psHT){

@@ -65,26 +65,48 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
 
 int main(){
 	const int SIZE = 11;
+	const int LOOP_LENGTH = 20;
 	HashTable HT;
 
 	int i = 0;
+	int updateTestKey = 2;
+	int updateTestData = 0;
+	int getTestKey = 5;
+	int getTestData = -10;
 	bool bSuccess = true;
 
 	htLoadErrorMessages();
 
-	htCreate(&HT, SIZE, sizeof(int), sizeof(int), intValidate, intHash, intComp, intPrint);
+	htCreate(&HT, SIZE, sizeof(int), sizeof(int), intValidate, intHash, intComp,
+			intPrint);
 	assert(htIsEmpty(&HT), "ht created as expected", "ht create weird");
-	htPrint(&HT);
-	for(i = 0; bSuccess && i < 20; i++){
+	//These are just for me because I know how to interpret them.
+	//htPrint(&HT);
+	for(i = 0; bSuccess && i < LOOP_LENGTH; i++){
 		bSuccess = htInsert(&HT, &i, &i);
 	}
 	assert(bSuccess, "Everything appears to have inserted correctly",
 			"insert for loop exited early");
 	assert(!htIsEmpty(&HT), "ht has items", "ht didn't insert");
-	htPrint(&HT);
+	//htPrint(&HT);
+	assert((*(int*)((htElement*)(HT.hashTable[0].psFirst->pData))->data) == 0,
+			"First is correct.", "Unexpected behavior from first");
+	assert((*(int*)((htElement*)(HT.hashTable[0].psLast->pData))->data) ==
+			LOOP_LENGTH - 1, "Last is correct.", "Unexpected behavior from last");
+	//htPrint(&HT);
 	i = 0;
 	htDelete(&HT, &i);
-	htPrint(&HT);
+	assert((*(int*)((htElement*)(HT.hashTable[0].psFirst->pData))->data) == 1,
+				"Delete successful.", "Unexpected behavior from delete");
+	htUpdate(&HT, &updateTestKey, &updateTestData);
+	assert((*(int*)((htElement*)(HT.hashTable[0].psFirst->psNext->pData))->key)
+			== updateTestKey, "looking at correct key.", "wrong element");
+	assert((*(int*)((htElement*)(HT.hashTable[0].psFirst->psNext->pData))->data)
+			== updateTestData, "Update successful", "Update error");
+	//htPrint(&HT);
+	assert(htGet(&HT, &getTestKey, &getTestData), "Get returns success",
+			"Get failed.");
+	assert(getTestData == 5, "Get got expected result", "Get weird");
 	htTerminate(&HT);
 
 	return EXIT_SUCCESS;
