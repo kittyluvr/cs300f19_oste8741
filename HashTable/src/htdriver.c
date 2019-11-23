@@ -72,7 +72,7 @@ int main(){
 
 	htLoadErrorMessages();
 
-	htCreate(&HT, SIZE, sizeof(int), sizeof(int), &intValidate, &intHash, &intComp, &intPrint);
+	htCreate(&HT, SIZE, sizeof(int), sizeof(int), intValidate, intHash, intComp, intPrint);
 	assert(htIsEmpty(&HT), "ht created as expected", "ht create weird");
 	htPrint(&HT);
 	for(i = 0; bSuccess && i < 20; i++){

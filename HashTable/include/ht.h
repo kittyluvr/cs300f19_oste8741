@@ -15,12 +15,13 @@
 #include "../../GenericDynamicList/include/list.h"
 #include <stdlib.h>
 
-enum htErrors{ NULL_HT_PTR = 0, HT_INVALID_CREATE_FUNC, HT_INVALID_KEY, HT_INVALID_DATA_PTR };
+enum htErrors{ NULL_HT_PTR = 0, HT_INVALID_CREATE_FUNC, HT_CREATE_FAILED, HT_INVALID_KEY, HT_INVALID_DATA_PTR };
 #define NUMBER_OF_HT_ERRORS HT_INVALID_DATA_PTR - NULL_HT_PTR + 1
 
 //Error management
 #define LOAD_HT_ERRORS strcpy(gszHTErrors[NULL_HT_PTR], "Error: invalid HT");\
 	strcpy(gszHTErrors[HT_INVALID_CREATE_FUNC], "Error: invalid function");\
+	strcpy(gszHTErrors[HT_CREATE_FAILED], "Error: could not malloc array");\
 	strcpy(gszHTErrors[HT_INVALID_KEY], "Error: received invalid key");\
 	strcpy(gszHTErrors[HT_INVALID_DATA_PTR], "Error: received invalid data");
 
@@ -63,7 +64,6 @@ extern void htLoadErrorMessages();
 
 //Hashtable check function
 extern bool htIsEmpty(HashTablePtr psHT);
-extern bool htIsFull(HashTablePtr psHT);
 
 //Data Management Functions
 extern bool htInsert(HashTablePtr psHT, void* key, void* pData);

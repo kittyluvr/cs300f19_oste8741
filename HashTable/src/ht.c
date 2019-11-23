@@ -75,7 +75,15 @@ extern void htCreate(HashTablePtr psHT, int size, int keySize,
 	if(validate == NULL || hash == NULL || compare == NULL || print == NULL){
 		processError("htCreate", HT_INVALID_CREATE_FUNC);
 	}
+	int i = 0;
+
 	psHT->hashTable  = (ListPtr)malloc(sizeof(List)*size);
+	if(psHT->hashTable == NULL){
+		processError("htCreate", HT_CREATE_FAILED);
+	}
+	for(i = 0; i < size; i++){
+		lstCreate(&(psHT->hashTable[i]));
+	}
 	psHT->tableSize  = size;
 	psHT->keySize		 = keySize;
 	psHT->dataSize	 = dataSize;
@@ -121,18 +129,6 @@ extern bool htIsEmpty(HashTablePtr psHT){
 		bEmpty = lstIsEmpty(&(psHT->hashTable[i]));
 	}
 	return bEmpty;
-}
-
-extern bool htIsFull(HashTablePtr psHT){
-	if(psHT == NULL){
-		processError("htIsEmpty", NULL_HT_PTR);
-	}
-	bool bFull = true;
-	int i = 0;
-	for(i = 0; bFull && i < psHT->tableSize; i++){
-		bFull = lstIsEmpty(&(psHT->hashTable[i]));
-	}
-	return bFull;
 }
 
 //Data Management Functions
@@ -194,6 +190,7 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	}
 	return true;
 }
+
 extern bool htDelete(HashTablePtr psHT, void* key){
 	if(psHT == NULL){
 		processError("htDelete", NULL_HT_PTR);
@@ -242,7 +239,11 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 		}
 	}
 }
-extern bool htUpdate(HashTablePtr psHT, void* key, void* pData);
+
+extern bool htUpdate(HashTablePtr psHT, void* key, void* pData){
+
+}
+
 extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer);
 
 //Print
