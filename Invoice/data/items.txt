@@ -1,0 +1,11 @@
+1 i7CPU Intel
+2 i5CPU Intel
+3 i3CPU Intel
+18 iMac Apple
+19 MacBook Apple
+
+20 MacBookPro Apple
+10202 9mmFan Corsair
+20102 CPUFan Corsair
+
+2020 ThingyExample company
