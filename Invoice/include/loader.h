@@ -26,7 +26,7 @@ typedef struct Item{
 extern bool loadConversion(char* szConversionsFileName,
 		HashTablePtr psConversions);
 extern bool loadItems(char* szItemsFileName, HashTablePtr psItems);
-extern char* getItemName(Item *psItem);
-extern char* getManufacturer(Item *psItem);
+extern void getItemName(Item *psItem, char* szName);
+extern void getItemManufacturer(Item *psItem, char* szMan);
 
 #endif

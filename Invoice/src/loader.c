@@ -11,6 +11,7 @@
 #include "../../HashTable/include/ht.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 static bool conversionValidate(void* key);
 static int conversionHash(void* key);
@@ -26,6 +27,7 @@ extern bool loadConversion(char* szConversionsFileName,
 		HashTablePtr psConversions){
 	const int CONVERSION_TABLE_SIZE = 31;
 	const int MAX_CURRENCY_NAME_LENGTH = 3;
+	const int EXPECTED_NUM_ITEMS_RECEIVED = 2;
 
 	bool bSuccess = true;
 	FILE* inFile;
@@ -41,8 +43,8 @@ extern bool loadConversion(char* szConversionsFileName,
 				sizeof(double), conversionValidate, conversionHash, conversionCompare,
 				conversionPrint);
 		while(bSuccess && !feof(inFile)){
-			bSuccess = (fscanf(inFile, "%3s %d", szCurrency, conversion)) == 2;
-			if(bSuccess){
+			if((fscanf(inFile, "%s %lf", szCurrency, &conversion))
+					== EXPECTED_NUM_ITEMS_RECEIVED){
 				htInsert(psConversions, szCurrency, &conversion);
 			}
 		}
@@ -53,6 +55,8 @@ extern bool loadConversion(char* szConversionsFileName,
 
 extern bool loadItems(char* szItemsFileName, HashTablePtr psItems){
 	const int ITEMS_TABLE_SIZE = 256;
+	const int EXPECTED_NUM_ITEMS_RECEIVED = 3;
+
 	bool bSuccess = true;
 	FILE* inFile;
 
@@ -67,9 +71,10 @@ extern bool loadItems(char* szItemsFileName, HashTablePtr psItems){
 		htCreate(psItems, ITEMS_TABLE_SIZE, sizeof(int), sizeof(Item),
 				itemValidate, itemHash, itemCompare, itemPrint);
 		while(bSuccess && !feof(inFile)){
-			bSuccess = (fscanf(inFile, "%i %20s %20s", &id, sItem.szName,
-					sItem.szManufacturer)) == 3;
-			if(bSuccess){
+			memset(sItem.szName, '\0', MAX_ITEM_CHARS);
+			memset(sItem.szManufacturer, '\0', MAX_ITEM_CHARS);
+			if((fscanf(inFile, "%i %s %s", &id, sItem.szName,
+					sItem.szManufacturer)) == EXPECTED_NUM_ITEMS_RECEIVED){
 				htInsert(psItems, &id, &sItem);
 			}
 		}
@@ -78,12 +83,12 @@ extern bool loadItems(char* szItemsFileName, HashTablePtr psItems){
 	return bSuccess;
 }
 
-extern char* getItemName(Item *psItem){
-	return psItem->szName;
+extern void getItemName(Item *psItem, char* szName){
+	strncpy(szName, psItem->szName, MAX_ITEM_CHARS);
+	return;
 }
-
-extern char* getManufacturer(Item *psItem){
-	return psItem->szManufacturer;
+extern void getItemManufacturer(Item *psItem, char* szMan){
+	strncpy(szMan, psItem->szManufacturer, MAX_ITEM_CHARS);
 }
 
 static bool conversionValidate(void* key){
@@ -128,6 +133,7 @@ static int itemCompare(void* pKey1, void* pKey2){
 }
 
 static void itemPrint(void* pKey, void* pData){
-	printf("%i %i, ", *(int*)pKey, *(int*)pData);
+	printf("%i %s %s, ", *(int*)pKey, ((Item*)pData)->szName,
+			((Item*)pData)->szManufacturer);
 	return;
 }
