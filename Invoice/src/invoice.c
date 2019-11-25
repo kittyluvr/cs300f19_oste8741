@@ -77,5 +77,7 @@ int main(){
 			fclose(outFile);
 		}
 	}
+	htTerminate(&sItems);
+	htTerminate(&sConversions);
 	return EXIT_SUCCESS;
 }

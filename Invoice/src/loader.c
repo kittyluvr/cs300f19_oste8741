@@ -112,7 +112,7 @@ static int conversionCompare(void* key1, void* key2){
 }
 
 static void conversionPrint(void* key, void* pData){
-	printf("%s %d, ", (char*)key, *(double*)pData);
+	printf("%s %f, ", (char*)key, *(double*)pData);
 	return;
 }
 
