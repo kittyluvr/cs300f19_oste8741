@@ -4,7 +4,7 @@
  Date:					11/23/19
  Class:         CS300
  Assignment:    HashTable
- Purpose:       Defines the functions to load hashtables
+ Purpose:       Provides the functions to load hashtables for invoice
  *************************************************************************/
 
 #ifndef HT_H
@@ -22,7 +22,9 @@ typedef struct Item{
 		char szManufacturer[MAX_ITEM_CHARS];
 }Item;
 
-bool loadConversion(char* szConversionsFileName, HashTablePtr psConversions);
-bool loadItems(char* szItemsFileName, HashTablePtr psItems);
+extern bool loadConversion(char* szConversionsFileName, HashTablePtr psConversions);
+extern bool loadItems(char* szItemsFileName, HashTablePtr psItems);
+extern char* getItemName(Item *psItem);
+extern char* getManufacturer(Item *psItem);
 
 #endif
