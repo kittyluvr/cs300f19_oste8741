@@ -11,25 +11,24 @@
 #include "../../HashTable/include/ht.h"
 
 int main(){
-	const int MAX_FILENAME_LENGTH = 20;
-
-	char conversionsFile[MAX_FILENAME_LENGTH] = "data/conversions.txt";
-	char itemsFile[MAX_FILENAME_LENGTH] = "data/items.txt";
+	char szConversionsFile[25] = "data/conversions.txt";
+	char szItemsFile[25] = "data/items.txt";
 
 	HashTable sConversions;
 	HashTable sItems;
 
 	//ht create is called in both of these.
-	if(!loadConversion(conversionsFile, sConversions)){
+	if(!loadConversion(szConversionsFile, &sConversions)){
 		printf("Could not load conversions file.");
 		return EXIT_FAILURE;
 	}
-	else if(!loadItems(itemsFile, sItems)){
+	else if(!loadItems(szItemsFile, &sItems)){
 		printf("Could not load items file.");
 		return EXIT_FAILURE;
 	}
 	else{
-
+		htPrint(&sConversions);
+		htPrint(&sItems);
 	}
 	return EXIT_SUCCESS;
 }

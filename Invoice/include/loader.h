@@ -7,12 +7,13 @@
  Purpose:       Provides the functions to load hashtables for invoice
  *************************************************************************/
 
-#ifndef HT_H
-#define HT_H
+#ifndef LOADER_H
+#define LOADER_H
 
 #define MAX_ITEM_CHARS 20
 
 #include "../../HashTable/include/ht.h"
+#include "../../GenericDynamicList/include/list.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -22,7 +23,8 @@ typedef struct Item{
 		char szManufacturer[MAX_ITEM_CHARS];
 }Item;
 
-extern bool loadConversion(char* szConversionsFileName, HashTablePtr psConversions);
+extern bool loadConversion(char* szConversionsFileName,
+		HashTablePtr psConversions);
 extern bool loadItems(char* szItemsFileName, HashTablePtr psItems);
 extern char* getItemName(Item *psItem);
 extern char* getManufacturer(Item *psItem);
