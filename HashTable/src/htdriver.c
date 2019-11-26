@@ -63,6 +63,15 @@ static void assert(bool bExpression, char *pTrue, char *pFalse) {
 	}
 }
 
+/*************************************************************************
+ Function: 	 	main
+
+ Description: main function for htdriver. tests hashtable ADT
+
+ Parameters:	None
+
+ Returned:	 	Exit status
+ ************************************************************************/
 int main(){
 	const int SIZE = 11;
 	const int LOOP_LENGTH = 20;
