@@ -94,6 +94,15 @@ extern void htCreate(HashTablePtr psHT, int size, int keySize,
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	htTerminate
+
+ Description: Terminates HT safely (to avoid memleaks)
+
+ Parameters:	psHT - The hashtable to terminate.
+
+ Returned:	 	None
+ *************************************************************************/
 extern void htTerminate(HashTablePtr psHT){
 	if(psHT == NULL){
 		processError("htTerminate", NULL_HT_PTR);
@@ -113,12 +122,33 @@ extern void htTerminate(HashTablePtr psHT){
 	return;
 }
 
+/**************************************************************************
+ Function: 	 	htLoadErrorMessages
+
+ Description: Initializes the string of error messages. LOAD_HT_ERRORS is a
+ 	 	 	 	 	 	  macro defined in the header file. Also calls function to load
+ 	 	 	 	 	 	  list errors
+
+ Parameters:	None
+
+ Returned:	 	None
+ *************************************************************************/
 extern void htLoadErrorMessages(){
 	LOAD_HT_ERRORS
 	lstLoadErrorMessages();
 }
 
 //Hashtable check function
+
+/**************************************************************************
+ Function: 	 	htIsEmpty
+
+ Description: Checks if any of the buckets have items.
+
+ Parameters:	psHT - The hashtable to check.
+
+ Returned:	 	Whether it's empty.
+ *************************************************************************/
 extern bool htIsEmpty(HashTablePtr psHT){
 	if(psHT == NULL){
 		processError("htIsEmpty", NULL_HT_PTR);
@@ -132,6 +162,19 @@ extern bool htIsEmpty(HashTablePtr psHT){
 }
 
 //Data Management Functions
+
+/**************************************************************************
+ Function: 	 	htInsert
+
+ Description: Inserts an item in the hashtable
+
+ Parameters:	psHT 	- The hashtable to insert into.
+ 	 	 	 	 	 	 	key	 	- The key to insert
+ 	 	 	 	 	 	 	pData - the data to insert
+
+ Returned:	 	Whether insert was successful.
+ 	 	 	 	 	 	 	(False means key already present)
+ *************************************************************************/
 extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	if(psHT == NULL){
 		processError("htInsert", NULL_HT_PTR);
@@ -191,6 +234,17 @@ extern bool htInsert(HashTablePtr psHT, void* key, void* pData){
 	return true;
 }
 
+/**************************************************************************
+ Function: 	 	htDelete
+
+ Description: Deletes an item from the hashtable
+
+ Parameters:	psHT 	- The hashtable to delete from.
+ 	 	 	 	 	 	 	key	 	- The key to delete
+
+ Returned:	 	Whether delete was successful.
+ 	 	 	 	 	 	 	(False means key not present to delete.)
+ *************************************************************************/
 extern bool htDelete(HashTablePtr psHT, void* key){
 	if(psHT == NULL){
 		processError("htDelete", NULL_HT_PTR);
@@ -222,7 +276,7 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 			}
 			//Else, if key is less than the key in the table, element is not present
 			else if(comp < 0){
-				return true;
+				return false;
 			}
 			//Else, if can go to next element, else not present
 			else{
@@ -230,13 +284,25 @@ extern bool htDelete(HashTablePtr psHT, void* key){
 					lstNext(&(psHT->hashTable[hash]));
 				}
 				else{
-					return true;
+					return false;
 				}
 			}
 		}
 	}
 }
 
+/**************************************************************************
+ Function: 	 	htUpdate
+
+ Description: Updates an item in the hashtable
+
+ Parameters:	psHT 	- The hashtable
+ 	 	 	 	 	 	 	key	 	- The key to update
+ 	 	 	 	 	 	 	pData - the new data
+
+ Returned:	 	Whether update was successful.
+ 	 	 	 	 	 	 	(False means key not present)
+ *************************************************************************/
 extern bool htUpdate(HashTablePtr psHT, void* key, void* pData){
 	if(psHT == NULL){
 		processError("htUpdate", NULL_HT_PTR);
@@ -272,7 +338,7 @@ extern bool htUpdate(HashTablePtr psHT, void* key, void* pData){
 			}
 			//Else, if key is less than the key in the table, element is not present
 			else if(comp < 0){
-				return true;
+				return false;
 			}
 			//Else, if can go to next element, else not present
 			else{
@@ -280,13 +346,25 @@ extern bool htUpdate(HashTablePtr psHT, void* key, void* pData){
 					lstNext(&(psHT->hashTable[hash]));
 				}
 				else{
-					return true;
+					return false;
 				}
 			}
 		}
 	}
 }
 
+/**************************************************************************
+ Function: 	 	htGet
+
+ Description: Gets an item from the hashtable
+
+ Parameters:	psHT 		- The hashtable
+ 	 	 	 	 	 	 	key	 		- The key to get
+ 	 	 	 	 	 	 	pBuffer - The pointer to place the data into
+
+ Returned:	 	Whether get was successful.
+ 	 	 	 	 	 	 	(False means key not present)
+ *************************************************************************/
 extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer){
 	if(psHT == NULL){
 		processError("htGet", NULL_HT_PTR);
@@ -319,7 +397,7 @@ extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer){
 				}
 				//Else, if key is less than the key in the table, element is not present
 				else if(comp < 0){
-					return true;
+					return false;
 				}
 				//Else, if can go to next element, else not present
 				else{
@@ -327,7 +405,7 @@ extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer){
 						lstNext(&(psHT->hashTable[hash]));
 					}
 					else{
-						return true;
+						return false;
 					}
 				}
 			}
@@ -335,6 +413,16 @@ extern bool htGet(HashTablePtr psHT, void* key, void* pBuffer){
 }
 
 //Print
+
+/**************************************************************************
+ Function: 	 	htPrint
+
+ Description: Prints out the hashtable
+
+ Parameters:	psHT - The hashtable to print.
+
+ Returned:	 	None.
+ *************************************************************************/
 extern void htPrint(HashTablePtr psHT){
 	if(psHT == NULL){
 		processError("htPrint", NULL_HT_PTR);
