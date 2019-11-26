@@ -12,6 +12,16 @@
 
 #define MAX_FILENAME_LENGTH 25
 
+/*************************************************************************
+ Function: 	 	main
+
+ Description: main function for invoice.
+ 	 	 	 	 	 	 	loads files and makes invoice.txt
+
+ Parameters:	None
+
+ Returned:	 	Exit status
+ ************************************************************************/
 int main(){
 	const int EXPECTED_NUM_ITEMS_RECEIVED = 4;
 	const int MAX_CURRENCY_NAME_LENGTH = 3;
@@ -36,6 +46,8 @@ int main(){
 
 	HashTable sConversions;
 	HashTable sItems;
+
+	htLoadErrorMessages();
 
 	//ht create is called in both of these.
 	if(!loadConversion(szConversionsFile, &sConversions)){
